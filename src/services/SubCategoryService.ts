@@ -1,5 +1,7 @@
+import { Request } from "express";
 import { SubCategoryCreateI } from "../Types";
 import { SubCategory } from "../entities/SubCategory";
+import { uploadFile } from "../utils/SingleFileUploade";
 
 export class SubCategoryService {
   async index(): Promise<SubCategory[] | null> {
@@ -17,11 +19,15 @@ export class SubCategoryService {
     }
   }
 
-  async store(data: SubCategoryCreateI): Promise<SubCategory | null> {
+  async store(req: Request): Promise<SubCategory | null> {
     try {
+      const imagePath = await uploadFile(req, "subCategory");
+
       const subCategory = new SubCategory();
-      subCategory.name = data.name;
-      subCategory.category = data.categoryId;
+      subCategory.name = req.body.name;
+      subCategory.category = req.body.categoryId;
+      subCategory.image = imagePath || "";
+
       await subCategory.save();
       return subCategory;
     } catch (error) {

@@ -47,7 +47,12 @@ export class CategoryService {
       category.name = req.body.name;
       category.image = imagePath || "";
 
-      await category.save();
+      try {
+        await category.save();
+      } catch (error) {
+        console.log(error);
+      }
+
       return category;
     } catch (error) {
       throw new Error(

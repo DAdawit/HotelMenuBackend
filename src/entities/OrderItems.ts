@@ -19,7 +19,7 @@ export class OrderItem extends BaseEntity {
   @Column()
   quantity!: number;
 
-  @ManyToOne(() => Menu, (menu) => menu.orderItems)
+  @ManyToOne(() => Menu, (menu) => menu.orderItems, { onDelete: "CASCADE" })
   menu!: Menu[];
 
   @ManyToOne(() => Color, (color) => color.orderItem, {

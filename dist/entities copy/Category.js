@@ -9,45 +9,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Image = void 0;
+exports.Category = void 0;
+const class_validator_1 = require("class-validator");
 const typeorm_1 = require("typeorm");
+const SubCategory_1 = require("./SubCategory");
 const Menu_1 = require("./Menu");
 const host_1 = require("../utils/host");
-let Image = class Image extends typeorm_1.BaseEntity {
+let Category = class Category extends typeorm_1.BaseEntity {
     loadImagePath() {
         const baseUrl = (0, host_1.getBaseUrl)();
-        this._fullImagePath = baseUrl + this.image; // Construct the full image path after entity load
+        this.imageUrl = baseUrl + this.image;
     }
 };
-exports.Image = Image;
+exports.Category = Category;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Image.prototype, "id", void 0);
+], Category.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Menu_1.Menu, (products) => Menu_1.Menu.images, {
-        onDelete: "CASCADE",
-    }),
-    __metadata("design:type", Array)
-], Image.prototype, "product", void 0);
+    (0, typeorm_1.Column)(),
+    (0, class_validator_1.MinLength)(2),
+    __metadata("design:type", String)
+], Category.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Image.prototype, "image", void 0);
+], Category.prototype, "image", void 0);
 __decorate([
     (0, typeorm_1.AfterLoad)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], Image.prototype, "loadImagePath", null);
+], Category.prototype, "loadImagePath", null);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Menu_1.Menu, (Menu) => Menu.category),
+    __metadata("design:type", Array)
+], Category.prototype, "menu", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => SubCategory_1.SubCategory, (subCategory) => subCategory.category),
+    __metadata("design:type", Array)
+], Category.prototype, "subCategory", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
-], Image.prototype, "created_at", void 0);
+], Category.prototype, "created_at", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
-], Image.prototype, "updated_at", void 0);
-exports.Image = Image = __decorate([
-    (0, typeorm_1.Entity)("images")
-], Image);
+], Category.prototype, "updated_at", void 0);
+exports.Category = Category = __decorate([
+    (0, typeorm_1.Entity)("categories")
+], Category);

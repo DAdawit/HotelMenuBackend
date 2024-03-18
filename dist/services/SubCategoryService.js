@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubCategoryService = void 0;
 const SubCategory_1 = require("../entities/SubCategory");
+const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 class SubCategoryService {
     index() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -27,12 +28,14 @@ class SubCategoryService {
             }
         });
     }
-    store(data) {
+    store(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "subCategory");
                 const subCategory = new SubCategory_1.SubCategory();
-                subCategory.name = data.name;
-                subCategory.category = data.categoryId;
+                subCategory.name = req.body.name;
+                subCategory.category = req.body.categoryId;
+                subCategory.image = imagePath || "";
                 yield subCategory.save();
                 return subCategory;
             }

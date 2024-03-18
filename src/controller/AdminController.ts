@@ -39,41 +39,9 @@ class AdminController {
       });
   };
 
-  public static getStores = (req: Request, res: Response) => {
-    service
-      .GetStores()
-      .then((stores) => {
-        res.send(stores);
-      })
-      .catch((error) => {
-        res.json(error);
-      });
-  };
-
-  public static deActivateStore = (req: Request, res: Response) => {
-    service
-      .DeActivateStore(req)
-      .then((user) => {
-        res.send(user);
-      })
-      .catch((err) => {
-        res.json(err);
-      });
-  };
-  public static activateStore = (req: Request, res: Response) => {
-    service
-      .ActivateStore(req)
-      .then((user) => {
-        res.send(user);
-      })
-      .catch((err) => {
-        res.json(err);
-      });
-  };
-
   public static getReportedProducts = (req: Request, res: Response) => {
     reportProdService
-      .GetReportedProducts()
+      .GetReportedMenu()
       .then((stores) => {
         res.send(stores);
       })

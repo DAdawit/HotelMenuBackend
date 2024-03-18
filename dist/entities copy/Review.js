@@ -8,48 +8,60 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReportedStore = void 0;
+exports.Review = void 0;
 const typeorm_1 = require("typeorm");
+const Menu_1 = require("./Menu");
 const User_1 = require("./User");
-const class_validator_1 = require("class-validator");
 const Types_1 = require("../Types");
-const Store_1 = require("./Store");
-let ReportedStore = class ReportedStore extends typeorm_1.BaseEntity {
+const class_validator_1 = require("class-validator");
+let Review = class Review extends typeorm_1.BaseEntity {
 };
-exports.ReportedStore = ReportedStore;
+exports.Review = Review;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], ReportedStore.prototype, "id", void 0);
+], Review.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({}),
-    (0, class_validator_1.MinLength)(2),
+    (0, typeorm_1.Column)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(5),
+    __metadata("design:type", Number)
+], Review.prototype, "rate", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
-], ReportedStore.prototype, "message", void 0);
+], Review.prototype, "comment", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Review.prototype, "visible", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Review.prototype, "edited", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "enum", enum: Types_1.ReviewStatus, default: Types_1.ReviewStatus.OnReview }),
     __metadata("design:type", String)
-], ReportedStore.prototype, "status", void 0);
+], Review.prototype, "status", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.reportProduct, { onDelete: "CASCADE" }),
-    __metadata("design:type", User_1.User)
-], ReportedStore.prototype, "user", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Store_1.Store, (store) => store.reportStore, {
+    (0, typeorm_1.ManyToOne)(() => Menu_1.Menu, (menu) => menu.review, {
         onDelete: "CASCADE",
     }),
-    __metadata("design:type", typeof (_a = typeof Store_1.Store !== "undefined" && Store_1.Store) === "function" ? _a : Object)
-], ReportedStore.prototype, "store", void 0);
+    __metadata("design:type", Menu_1.Menu)
+], Review.prototype, "menu", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.review, { onDelete: "CASCADE" }),
+    __metadata("design:type", User_1.User)
+], Review.prototype, "user", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
-], ReportedStore.prototype, "created_at", void 0);
+], Review.prototype, "created_at", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
-], ReportedStore.prototype, "updated_at", void 0);
-exports.ReportedStore = ReportedStore = __decorate([
-    (0, typeorm_1.Entity)("reportedStores")
-], ReportedStore);
+], Review.prototype, "updated_at", void 0);
+exports.Review = Review = __decorate([
+    (0, typeorm_1.Entity)("reviews")
+], Review);

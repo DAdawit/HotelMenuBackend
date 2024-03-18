@@ -13,6 +13,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const MenuService_1 = require("../services/MenuService");
 const Menu_1 = require("../entities/Menu");
 const DeleteImages_1 = require("../utils/DeleteImages");
+const class_validator_1 = require("class-validator");
+const validationErrorConverter_1 = require("../utils/validationErrorConverter");
+const class_transformer_1 = require("class-transformer");
 const service = new MenuService_1.MenuService();
 class ProductController {
 }
@@ -67,16 +70,28 @@ ProductController.relatedProducts = (req, res) => {
         res.json(err);
     });
 };
-ProductController.add = (req, res) => {
+ProductController.add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body.categoryId) {
+        return res.status(400).send({ message: "category required" });
+    }
+    if (!req.body.subCategoryId) {
+        return res.status(400).send({ message: "category required" });
+    }
+    const newMenu = (0, class_transformer_1.plainToInstance)(Menu_1.Menu, req.body);
+    const errors = yield (0, class_validator_1.validate)(newMenu);
+    const err = (0, validationErrorConverter_1.validationErrorFormater)(errors);
+    if (errors.length > 0) {
+        res.status(400).send(err);
+    }
     service
         .add(req)
         .then((product) => {
-        res.send(product);
+        res.status(201).send(product);
     })
         .catch((err) => {
         res.send(err);
     });
-};
+});
 ProductController.detail = (req, res) => {
     service
         .detail(req.params.id)
@@ -108,7 +123,7 @@ ProductController.delete = (req, res) => __awaiter(void 0, void 0, void 0, funct
         service
             .remove(req.params.id)
             .then(() => __awaiter(void 0, void 0, void 0, function* () {
-            const imagePath = `menues/${menu.coverImage}`;
+            const imagePath = `menues/${menu.image}`;
             yield (0, DeleteImages_1.DeleteImage)(imagePath);
             res.send({ message: "product deleted successfully" });
         }))
@@ -122,6 +137,16 @@ ProductController.addProductColor = (req, res) => {
         .AddProductColor(req)
         .then((product) => {
         res.send(product);
+    })
+        .catch((err) => {
+        res.send(err);
+    });
+};
+ProductController.addOrChangeMenuImage = (req, res) => {
+    service
+        .AddOrChangeMenuImage(req)
+        .then((user) => {
+        res.send(user);
     })
         .catch((err) => {
         res.send(err);

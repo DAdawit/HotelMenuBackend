@@ -54,7 +54,12 @@ class CategoryService {
                 const category = new Category_1.Category();
                 category.name = req.body.name;
                 category.image = imagePath || "";
-                yield category.save();
+                try {
+                    yield category.save();
+                }
+                catch (error) {
+                    console.log(error);
+                }
                 return category;
             }
             catch (error) {

@@ -2,9 +2,13 @@ import express, { Router } from "express";
 import { createConnection } from "typeorm";
 import router from "./routes/router";
 import cors from "cors";
+import multer from "multer";
 
 const app = express();
 const port: number = 4000;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const startServer = async () => {
   try {
     await createConnection({
@@ -25,7 +29,6 @@ const startServer = async () => {
   app.use(express.static("public"));
   app.use(cors());
 
-  app.use(express.json());
   app.use("/api", router);
 
   app.listen(port, () => {

@@ -16,6 +16,7 @@ const Review_1 = require("../entities/Review");
 const Color_1 = require("../entities/Color");
 const typeorm_1 = require("typeorm");
 const Menu_1 = require("../entities/Menu");
+const AvaliableMealTime_1 = require("../entities/AvaliableMealTime");
 class MenuService {
     // async GetPaginatedProducts(req: Request): Promise<PaginationResult<Product>> {
     //   const skip = (req.body.skip - 1) * req.body.take;
@@ -109,17 +110,26 @@ class MenuService {
     add(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Use the utility function to handle file upload
-                const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
+                console.log(req.body.availableMealLTimesIds);
+                const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
+                // console.log(availableMealTimes);
                 const menu = new Menu_1.Menu();
                 menu.name = req.body.name;
                 menu.description = req.body.description;
                 menu.price = req.body.price;
+                menu.special = req.body.special;
+                menu.ingridiants = req.body.ingridiants;
+                menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.category = parseInt(req.body.categoryId);
                 menu.subCategory = parseInt(req.body.subCategoryId);
-                menu.coverImage = imagePath || "";
+                menu.available_meal_times = availableMealTimes;
                 console.log(menu);
-                yield menu.save();
+                try {
+                    yield menu.save();
+                }
+                catch (error) {
+                    console.log(error);
+                }
                 return menu;
             }
             catch (error) {
@@ -138,12 +148,12 @@ class MenuService {
             });
             let imagePath;
             try {
-                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "products");
+                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
             }
             catch (error) {
                 imagePath = null;
             }
-            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.coverImage}`;
+            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
             if (imagePath !== null) {
                 yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
             }
@@ -151,7 +161,7 @@ class MenuService {
                 menu.name = req.body.name;
                 menu.description = req.body.description;
                 menu.price = req.body.price;
-                menu.coverImage = imagePath !== null && imagePath !== void 0 ? imagePath : imageTodelete;
+                menu.image = imagePath !== null && imagePath !== void 0 ? imagePath : imageTodelete;
             }
             yield (menu === null || menu === void 0 ? void 0 : menu.save());
             return menu;
@@ -230,6 +240,29 @@ class MenuService {
                     ? error.message
                     : "An unknown error occurred while saving product model.");
             }
+        });
+    }
+    AddOrChangeMenuImage(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const menu = yield Menu_1.Menu.findOneBy({ id: parseInt(req.params.id) });
+            let imagePath;
+            try {
+                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
+            }
+            catch (error) {
+                imagePath = null;
+            }
+            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
+            if ((menu === null || menu === void 0 ? void 0 : menu.image) !== null) {
+                if (imagePath !== null) {
+                    yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
+                }
+            }
+            if (menu !== null) {
+                menu.image = imagePath ? imagePath : "";
+            }
+            yield (menu === null || menu === void 0 ? void 0 : menu.save());
+            return menu;
         });
     }
 }

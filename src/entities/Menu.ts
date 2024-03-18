@@ -13,6 +13,17 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Length,
+  Min,
+  ValidateNested,
+} from "class-validator";
+
 import { Cart } from "./Cart";
 import { Order } from "./Order";
 import { OrderItem } from "./OrderItems";
@@ -22,52 +33,62 @@ import { SubCategory } from "./SubCategory";
 import { Category } from "./Category";
 import { getBaseUrl } from "../utils/host";
 import { MealTime } from "../Types";
+import { AvailableMealTime } from "./AvaliableMealTime";
 
 @Entity("menues")
 export class Menu extends BaseEntity {
-  private _coverImageUrl!: string;
+  private _imageUrl!: string;
 
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column()
+  @IsNotEmpty({ message: "Name should not be empty" })
+  @IsString({ message: "Name must be a string" })
   name!: string;
 
   @Column()
+  @IsNotEmpty({ message: "Description should not be empty" })
+  @IsString({ message: "Description must be a string" })
   description!: string;
 
   @Column()
+  @IsNumber({}, { message: "Price must be a number" })
+  @Min(0, { message: "Price must be at least 0" })
   price!: number;
 
   @Column({ default: false })
+  @IsBoolean({ message: "Special must be a boolean" })
   special!: boolean;
 
   @Column({ nullable: true })
+  @IsOptional()
+  @IsString({ message: "Ingredients must be a string" })
   ingridiants!: string;
 
   @Column({ default: true })
+  @IsBoolean({ message: "Available all day must be a boolean" })
   avaliable_all_day!: boolean;
 
-  @Column("enum", {
-    enum: MealTime,
-    array: true,
-    default: [],
-  })
-  avaliable_meal_time!: MealTime[];
-
-  @Column()
-  coverImage!: string;
+  @Column({ nullable: true })
+  image!: string;
 
   @AfterLoad()
   loadImagePath() {
     const baseUrl = getBaseUrl();
-    this._coverImageUrl = baseUrl + this.coverImage; // Construct the full image path after entity load
+    this._imageUrl = baseUrl + this.image; // Construct the full image path after entity load
   }
 
+  @ManyToMany(() => AvailableMealTime, (mealTime) => mealTime.menues)
+  @JoinTable()
+  available_meal_times!: AvailableMealTime[];
+
   @ManyToOne(() => Category, (category) => category.menu) // specify inverse side as a second parameter
+  @ValidateNested({ message: "Category is required" })
   category!: Category;
 
-  @ManyToOne(() => SubCategory, (subcategory) => subcategory.product)
+  @ManyToOne(() => SubCategory, (subcategory) => subcategory.menu)
+  @ValidateNested({ message: "SubCategory is required" })
   subCategory!: SubCategory;
 
   @OneToMany(() => Cart, (cart) => cart.menu)
@@ -79,7 +100,9 @@ export class Menu extends BaseEntity {
   @OneToMany(() => ReportedMenu, (review) => review.menu)
   reportMenu!: ReportedMenu[];
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.menu)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.menu, {
+    onDelete: "RESTRICT",
+  })
   orderItems!: OrderItem[];
 
   @CreateDateColumn()

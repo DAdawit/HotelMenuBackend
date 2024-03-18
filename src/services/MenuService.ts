@@ -5,9 +5,10 @@ import { MultipleFileUploade } from "../utils/MultipleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Review } from "../entities/Review";
 import { Color } from "../entities/Color";
-import { Equal, Not, getRepository } from "typeorm";
+import { DataSource, Equal, Not, getRepository } from "typeorm";
 import { PaginationResult, paginate } from "../utils/pagination";
 import { Menu } from "../entities/Menu";
+import { AvailableMealTime } from "../entities/AvaliableMealTime";
 export class MenuService {
   // async GetPaginatedProducts(req: Request): Promise<PaginationResult<Product>> {
   //   const skip = (req.body.skip - 1) * req.body.take;
@@ -104,17 +105,31 @@ export class MenuService {
 
   async add(req: Request): Promise<Menu | null> {
     try {
-      // Use the utility function to handle file upload
-      const imagePath = await uploadFile(req, "menues");
+      console.log(req.body.availableMealLTimesIds);
+
+      const availableMealTimes = await AvailableMealTime.findByIds(
+        req.body.available_meal_times
+      );
+
+      // console.log(availableMealTimes);
+
       const menu = new Menu();
       menu.name = req.body.name;
       menu.description = req.body.description;
       menu.price = req.body.price;
+      menu.special = req.body.special;
+      menu.ingridiants = req.body.ingridiants;
+      menu.avaliable_all_day = req.body.avaliable_all_day;
       menu.category = parseInt(req.body.categoryId) as any;
       menu.subCategory = parseInt(req.body.subCategoryId) as any;
-      menu.coverImage = imagePath || "";
+      menu.available_meal_times = availableMealTimes;
       console.log(menu);
-      await menu.save();
+
+      try {
+        await menu.save();
+      } catch (error) {
+        console.log(error);
+      }
       return menu;
     } catch (error) {
       throw new Error(
@@ -134,11 +149,11 @@ export class MenuService {
     let imagePath;
 
     try {
-      imagePath = await uploadFile(req, "products");
+      imagePath = await uploadFile(req, "menues");
     } catch (error) {
       imagePath = null;
     }
-    const imageTodelete = `public/${menu?.coverImage}`;
+    const imageTodelete = `public/${menu?.image}`;
     if (imagePath !== null) {
       await DeleteImage(imageTodelete);
     }
@@ -147,7 +162,7 @@ export class MenuService {
       menu.name = req.body.name;
       menu.description = req.body.description;
       menu.price = req.body.price;
-      menu.coverImage = imagePath ?? imageTodelete;
+      menu.image = imagePath ?? imageTodelete;
     }
     await menu?.save();
     return menu;
@@ -229,5 +244,30 @@ export class MenuService {
           : "An unknown error occurred while saving product model."
       );
     }
+  }
+
+  async AddOrChangeMenuImage(req: Request): Promise<Menu | null> {
+    const menu = await Menu.findOneBy({ id: parseInt(req.params.id) });
+
+    let imagePath;
+
+    try {
+      imagePath = await uploadFile(req, "menues");
+    } catch (error) {
+      imagePath = null;
+    }
+    const imageTodelete = `public/${menu?.image}`;
+
+    if (menu?.image !== null) {
+      if (imagePath !== null) {
+        await DeleteImage(imageTodelete);
+      }
+    }
+
+    if (menu !== null) {
+      menu.image = imagePath ? imagePath : "";
+    }
+    await menu?.save();
+    return menu;
   }
 }

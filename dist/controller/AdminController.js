@@ -38,39 +38,9 @@ AdminController.activateUser = (req, res) => {
         res.json(err);
     });
 };
-AdminController.getStores = (req, res) => {
-    service
-        .GetStores()
-        .then((stores) => {
-        res.send(stores);
-    })
-        .catch((error) => {
-        res.json(error);
-    });
-};
-AdminController.deActivateStore = (req, res) => {
-    service
-        .DeActivateStore(req)
-        .then((user) => {
-        res.send(user);
-    })
-        .catch((err) => {
-        res.json(err);
-    });
-};
-AdminController.activateStore = (req, res) => {
-    service
-        .ActivateStore(req)
-        .then((user) => {
-        res.send(user);
-    })
-        .catch((err) => {
-        res.json(err);
-    });
-};
 AdminController.getReportedProducts = (req, res) => {
     reportProdService
-        .GetReportedProducts()
+        .GetReportedMenu()
         .then((stores) => {
         res.send(stores);
     })
