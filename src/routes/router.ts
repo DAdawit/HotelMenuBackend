@@ -12,6 +12,7 @@ import ReportProductController from "../controller/ReportProductController";
 import AdminController from "../controller/AdminController";
 import MealTimeController from "../controller/MealTimeController";
 import HeroController from "../controller/HeroController";
+import LogoController from "../controller/LogoController";
 const router = Router();
 
 // Routes that do not require authentication
@@ -20,6 +21,7 @@ router.get("/users", UserController.getUsers);
 router.post("/users", UserController.addUser);
 router.put("/change-profile-pic/:id", UserController.updateProfilePic);
 router.get("/heros", HeroController.getHeroSection);
+router.get("/logos", LogoController.getLogos);
 
 router.get("/products", MenuController.get);
 
@@ -54,6 +56,12 @@ authRoutes.post("/admin/heros", HeroController.addHeroSection);
 authRoutes.get("/admin/heros/:id", HeroController.getHeroSectionById);
 authRoutes.delete("/admin/heros/:id", HeroController.removeHeroSection);
 authRoutes.put("/admin/heros/:id", HeroController.updateHeroSection);
+
+authRoutes.get("/admin/logos", LogoController.getLogos);
+authRoutes.post("/admin/logos", LogoController.addLogo);
+authRoutes.get("/admin/logos/:id", LogoController.getLogoById);
+authRoutes.delete("/admin/logos/:id", LogoController.removeLogo);
+authRoutes.put("/admin/logos/:id", LogoController.updateLogo);
 
 authRoutes.get("/admin/categories", CategoryController.getCategories);
 authRoutes.post("/admin/categories", CategoryController.addCategory);

@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HeroSectionService = void 0;
+const Category_1 = require("../entities/Category");
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
 const Hero_1 = require("../entities/Hero");
@@ -101,11 +102,11 @@ class HeroSectionService {
     remove(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const hero = yield Hero_1.Hero.delete({ id: parseInt(req.params.id) });
-                if (hero.affected === 0) {
+                const category = yield Category_1.Category.delete({ id: parseInt(req.params.id) });
+                if (category.affected === 0) {
                     return null;
                 }
-                return hero;
+                return category;
             }
             catch (error) {
                 throw new Error(error instanceof Error

@@ -4,15 +4,15 @@ import Multer from "multer";
 import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
-import { Hero } from "../entities/Hero";
+import { Logo } from "../entities/Logo";
 
-export class HeroSectionService {
-  async getAll(): Promise<Hero[] | null> {
+export class LogoService {
+  async getAll(): Promise<Logo[] | null> {
     try {
-      const hero = await Hero.find({});
-      console.log(hero);
+      const logos = await Logo.find({});
+      console.log(logos);
 
-      return hero;
+      return logos;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -22,12 +22,12 @@ export class HeroSectionService {
     }
   }
 
-  async getById(req: Request): Promise<Hero | null> {
+  async getById(req: Request): Promise<Logo | null> {
     try {
-      const hero = Hero.findOne({
+      const logo = Logo.findOne({
         where: { id: parseInt(req.params.id) },
       });
-      return hero;
+      return logo;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -37,26 +37,23 @@ export class HeroSectionService {
     }
   }
 
-  async add(req: Request): Promise<Hero | null> {
+  async add(req: Request): Promise<Logo | null> {
     try {
       // Use the utility function to handle file upload
-      const imagePath = await uploadFile(req, "herosection");
+      const imagePath = await uploadFile(req, "logos");
 
-      const hero = new Hero();
-      hero.slogan = req.body.slogan;
-      hero.title = req.body.title;
-      hero.subtitle = req.body.subtitle;
-      hero.content = req.body.content;
-      hero.image = imagePath || "";
+      const logo = new Logo();
+      logo.name = req.body.name;
+      logo.image = imagePath || "";
 
       try {
-        await hero.save();
+        await logo.save();
       } catch (error) {
         console.log(error);
       }
-      hero.loadImagePath();
+      logo.loadImagePath();
 
-      return hero;
+      return logo;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -66,43 +63,40 @@ export class HeroSectionService {
     }
   }
 
-  async update(req: Request): Promise<Hero | null> {
-    const hero = await Hero.findOneBy({
+  async update(req: Request): Promise<Logo | null> {
+    const logo = await Logo.findOneBy({
       id: parseInt(req.params.id),
     });
 
     let imagePath;
 
     try {
-      imagePath = await uploadFile(req, "herosection");
+      imagePath = await uploadFile(req, "logos");
     } catch (error) {
       imagePath = null;
     }
-    const imageTodelete = `public/${hero?.image}`;
+    const imageTodelete = `public/${logo?.image}`;
     if (imagePath !== null) {
       await DeleteImage(imageTodelete);
     }
 
-    if (hero !== null) {
-      hero.slogan = req.body.slogan;
-      hero.title = req.body.title;
-      hero.subtitle = req.body.subtitle;
-      hero.content = req.body.content;
-      hero.image = imagePath || "";
+    if (logo !== null) {
+      logo.name = req.body.name;
+      logo.image = imagePath || "";
     }
-    await hero?.save();
-    hero?.loadImagePath();
+    await logo?.save();
+    logo?.loadImagePath();
 
-    return hero;
+    return logo;
   }
 
   async remove(req: Request): Promise<any | null> {
     try {
-      const hero = await Hero.delete({ id: parseInt(req.params.id) });
-      if (hero.affected === 0) {
+      const logo = await Logo.delete({ id: parseInt(req.params.id) });
+      if (logo.affected === 0) {
         return null;
       }
-      return hero;
+      return logo;
     } catch (error) {
       throw new Error(
         error instanceof Error

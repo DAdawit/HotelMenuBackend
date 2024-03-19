@@ -9,17 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HeroSectionService = void 0;
+exports.LogoService = void 0;
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
-const Hero_1 = require("../entities/Hero");
-class HeroSectionService {
+const Logo_1 = require("../entities/Logo");
+class LogoService {
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const hero = yield Hero_1.Hero.find({});
-                console.log(hero);
-                return hero;
+                const logos = yield Logo_1.Logo.find({});
+                console.log(logos);
+                return logos;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -31,10 +31,10 @@ class HeroSectionService {
     getById(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const hero = Hero_1.Hero.findOne({
+                const logo = Logo_1.Logo.findOne({
                     where: { id: parseInt(req.params.id) },
                 });
-                return hero;
+                return logo;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -47,21 +47,18 @@ class HeroSectionService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Use the utility function to handle file upload
-                const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "herosection");
-                const hero = new Hero_1.Hero();
-                hero.slogan = req.body.slogan;
-                hero.title = req.body.title;
-                hero.subtitle = req.body.subtitle;
-                hero.content = req.body.content;
-                hero.image = imagePath || "";
+                const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "logos");
+                const logo = new Logo_1.Logo();
+                logo.name = req.body.name;
+                logo.image = imagePath || "";
                 try {
-                    yield hero.save();
+                    yield logo.save();
                 }
                 catch (error) {
                     console.log(error);
                 }
-                hero.loadImagePath();
-                return hero;
+                logo.loadImagePath();
+                return logo;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -72,40 +69,37 @@ class HeroSectionService {
     }
     update(req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const hero = yield Hero_1.Hero.findOneBy({
+            const logo = yield Logo_1.Logo.findOneBy({
                 id: parseInt(req.params.id),
             });
             let imagePath;
             try {
-                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "herosection");
+                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "logos");
             }
             catch (error) {
                 imagePath = null;
             }
-            const imageTodelete = `public/${hero === null || hero === void 0 ? void 0 : hero.image}`;
+            const imageTodelete = `public/${logo === null || logo === void 0 ? void 0 : logo.image}`;
             if (imagePath !== null) {
                 yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
             }
-            if (hero !== null) {
-                hero.slogan = req.body.slogan;
-                hero.title = req.body.title;
-                hero.subtitle = req.body.subtitle;
-                hero.content = req.body.content;
-                hero.image = imagePath || "";
+            if (logo !== null) {
+                logo.name = req.body.name;
+                logo.image = imagePath || "";
             }
-            yield (hero === null || hero === void 0 ? void 0 : hero.save());
-            hero === null || hero === void 0 ? void 0 : hero.loadImagePath();
-            return hero;
+            yield (logo === null || logo === void 0 ? void 0 : logo.save());
+            logo === null || logo === void 0 ? void 0 : logo.loadImagePath();
+            return logo;
         });
     }
     remove(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const hero = yield Hero_1.Hero.delete({ id: parseInt(req.params.id) });
-                if (hero.affected === 0) {
+                const logo = yield Logo_1.Logo.delete({ id: parseInt(req.params.id) });
+                if (logo.affected === 0) {
                     return null;
                 }
-                return hero;
+                return logo;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -115,4 +109,4 @@ class HeroSectionService {
         });
     }
 }
-exports.HeroSectionService = HeroSectionService;
+exports.LogoService = LogoService;

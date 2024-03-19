@@ -17,6 +17,7 @@ const ReportProductController_1 = __importDefault(require("../controller/ReportP
 const AdminController_1 = __importDefault(require("../controller/AdminController"));
 const MealTimeController_1 = __importDefault(require("../controller/MealTimeController"));
 const HeroController_1 = __importDefault(require("../controller/HeroController"));
+const LogoController_1 = __importDefault(require("../controller/LogoController"));
 const router = (0, express_1.Router)();
 // Routes that do not require authentication
 router.post("/login", UserController_1.default.LoginUser);
@@ -24,6 +25,7 @@ router.get("/users", UserController_1.default.getUsers);
 router.post("/users", UserController_1.default.addUser);
 router.put("/change-profile-pic/:id", UserController_1.default.updateProfilePic);
 router.get("/heros", HeroController_1.default.getHeroSection);
+router.get("/logos", LogoController_1.default.getLogos);
 router.get("/products", MenuController_1.default.get);
 router.get("/products/related/:id", MenuController_1.default.relatedProducts);
 router.get("/products/:id", MenuController_1.default.detail);
@@ -47,6 +49,11 @@ authRoutes.post("/admin/heros", HeroController_1.default.addHeroSection);
 authRoutes.get("/admin/heros/:id", HeroController_1.default.getHeroSectionById);
 authRoutes.delete("/admin/heros/:id", HeroController_1.default.removeHeroSection);
 authRoutes.put("/admin/heros/:id", HeroController_1.default.updateHeroSection);
+authRoutes.get("/admin/logos", LogoController_1.default.getLogos);
+authRoutes.post("/admin/logos", LogoController_1.default.addLogo);
+authRoutes.get("/admin/logos/:id", LogoController_1.default.getLogoById);
+authRoutes.delete("/admin/logos/:id", LogoController_1.default.removeLogo);
+authRoutes.put("/admin/logos/:id", LogoController_1.default.updateLogo);
 authRoutes.get("/admin/categories", CategoryController_1.default.getCategories);
 authRoutes.post("/admin/categories", CategoryController_1.default.addCategory);
 authRoutes.get("/admin/categories/:id", CategoryController_1.default.getCategoryById);
