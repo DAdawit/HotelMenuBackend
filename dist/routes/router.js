@@ -16,12 +16,14 @@ const ProductReviewsController_1 = __importDefault(require("../controller/Produc
 const ReportProductController_1 = __importDefault(require("../controller/ReportProductController"));
 const AdminController_1 = __importDefault(require("../controller/AdminController"));
 const MealTimeController_1 = __importDefault(require("../controller/MealTimeController"));
+const HeroController_1 = __importDefault(require("../controller/HeroController"));
 const router = (0, express_1.Router)();
 // Routes that do not require authentication
 router.post("/login", UserController_1.default.LoginUser);
 router.get("/users", UserController_1.default.getUsers);
 router.post("/users", UserController_1.default.addUser);
 router.put("/change-profile-pic/:id", UserController_1.default.updateProfilePic);
+router.get("/heros", HeroController_1.default.getHeroSection);
 router.get("/products", MenuController_1.default.get);
 router.get("/products/related/:id", MenuController_1.default.relatedProducts);
 router.get("/products/:id", MenuController_1.default.detail);
@@ -40,6 +42,11 @@ authRoutes.post("/admin/add-menu", MenuController_1.default.add);
 router.put("/admin/add-menuImage/:id", MenuController_1.default.addOrChangeMenuImage);
 authRoutes.put("/admin/product/:id", MenuController_1.default.updateProduct);
 authRoutes.put("/admin/order/:id/change-status", OrderController_1.default.changeStatus);
+authRoutes.get("/admin/heros", HeroController_1.default.getHeroSection);
+authRoutes.post("/admin/heros", HeroController_1.default.addHeroSection);
+authRoutes.get("/admin/heros/:id", HeroController_1.default.getHeroSectionById);
+authRoutes.delete("/admin/heros/:id", HeroController_1.default.removeHeroSection);
+authRoutes.put("/admin/heros/:id", HeroController_1.default.updateHeroSection);
 authRoutes.get("/admin/categories", CategoryController_1.default.getCategories);
 authRoutes.post("/admin/categories", CategoryController_1.default.addCategory);
 authRoutes.get("/admin/categories/:id", CategoryController_1.default.getCategoryById);
