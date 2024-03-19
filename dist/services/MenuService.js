@@ -262,6 +262,7 @@ class MenuService {
                 menu.image = imagePath ? imagePath : "";
             }
             yield (menu === null || menu === void 0 ? void 0 : menu.save());
+            menu === null || menu === void 0 ? void 0 : menu.loadImagePath();
             return menu;
         });
     }

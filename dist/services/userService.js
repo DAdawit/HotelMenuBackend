@@ -83,6 +83,7 @@ class UserService {
             if (user !== null) {
                 user.profilePic = imagePath ? imagePath : "";
             }
+            user === null || user === void 0 ? void 0 : user.loadImagePath();
             yield (user === null || user === void 0 ? void 0 : user.save());
             return user;
         });

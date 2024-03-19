@@ -268,6 +268,7 @@ export class MenuService {
       menu.image = imagePath ? imagePath : "";
     }
     await menu?.save();
+    menu?.loadImagePath();
     return menu;
   }
 }
