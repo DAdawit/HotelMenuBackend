@@ -53,7 +53,7 @@ SubcategoryController.addSubCategory = (req, res) => __awaiter(void 0, void 0, v
 });
 SubcategoryController.updateSubCategory = (req, res) => {
     service
-        .update(req.params.id, req.body)
+        .update(req)
         .then((category) => {
         res.send(category);
     })

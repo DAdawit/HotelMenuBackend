@@ -29,10 +29,6 @@ export class Hero extends BaseEntity {
   @Column()
   title!: string;
 
-  @MinLength(2)
-  @Column()
-  subtitle!: string;
-
   @Column()
   content!: string;
 

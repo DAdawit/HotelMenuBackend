@@ -89,7 +89,7 @@ class CategoryService {
             }
             if (category !== null) {
                 category.name = req.body.name;
-                category.image = imagePath === null ? imageTodelete : imagePath;
+                category.image = imagePath !== null && imagePath !== void 0 ? imagePath : category.image;
             }
             yield (category === null || category === void 0 ? void 0 : category.save());
             return category;

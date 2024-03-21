@@ -84,7 +84,7 @@ export class CategoryService {
 
     if (category !== null) {
       category.name = req.body.name;
-      category.image = imagePath === null ? imageTodelete : imagePath;
+      category.image = imagePath ?? category.image;
     }
     await category?.save();
     return category;

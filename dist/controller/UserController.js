@@ -104,7 +104,7 @@ UserController.LoginUser = (req, res) => __awaiter(void 0, void 0, void 0, funct
         },
     });
     if (!user) {
-        return res.status(400).json({ detail: "user not found" });
+        return res.status(400).json({ detail: "Incorrect email or password." });
     }
     if (user && bcryptjs_1.default.compareSync(req.body.password, user.password)) {
         const token = _a.createToken(user.id);
@@ -115,7 +115,7 @@ UserController.LoginUser = (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.status(200).send(data);
     }
     else {
-        return res.status(401).json({ detail: "incorrect password!" });
+        return res.status(401).json({ detail: "Incorrect email or password." });
     }
 });
 UserController.verifyToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

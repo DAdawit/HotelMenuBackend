@@ -98,7 +98,7 @@ class UserController {
       },
     });
     if (!user) {
-      return res.status(400).json({ detail: "user not found" });
+      return res.status(400).json({ detail: "Incorrect email or password." });
     }
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
       const token = this.createToken(user.id);
@@ -108,7 +108,7 @@ class UserController {
       };
       return res.status(200).send(data);
     } else {
-      return res.status(401).json({ detail: "incorrect password!" });
+      return res.status(401).json({ detail: "Incorrect email or password." });
     }
   };
 

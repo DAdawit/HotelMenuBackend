@@ -18,7 +18,7 @@ class HeroSectionService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const hero = yield Hero_1.Hero.find({});
-                console.log(hero);
+                // console.log(hero);
                 return hero;
             }
             catch (error) {
@@ -51,7 +51,6 @@ class HeroSectionService {
                 const hero = new Hero_1.Hero();
                 hero.slogan = req.body.slogan;
                 hero.title = req.body.title;
-                hero.subtitle = req.body.subtitle;
                 hero.content = req.body.content;
                 hero.image = imagePath || "";
                 try {
@@ -89,9 +88,8 @@ class HeroSectionService {
             if (hero !== null) {
                 hero.slogan = req.body.slogan;
                 hero.title = req.body.title;
-                hero.subtitle = req.body.subtitle;
                 hero.content = req.body.content;
-                hero.image = imagePath || "";
+                hero.image = imagePath !== null && imagePath !== void 0 ? imagePath : hero.image;
             }
             yield (hero === null || hero === void 0 ? void 0 : hero.save());
             hero === null || hero === void 0 ? void 0 : hero.loadImagePath();

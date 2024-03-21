@@ -18,7 +18,7 @@ class LogoService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const logos = yield Logo_1.Logo.find({});
-                console.log(logos);
+                // console.log(logos);
                 return logos;
             }
             catch (error) {
@@ -85,7 +85,7 @@ class LogoService {
             }
             if (logo !== null) {
                 logo.name = req.body.name;
-                logo.image = imagePath || "";
+                logo.image = imagePath !== null && imagePath !== void 0 ? imagePath : logo.image;
             }
             yield (logo === null || logo === void 0 ? void 0 : logo.save());
             logo === null || logo === void 0 ? void 0 : logo.loadImagePath();

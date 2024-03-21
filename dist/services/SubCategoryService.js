@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SubCategoryService = void 0;
 const SubCategory_1 = require("../entities/SubCategory");
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
+const DeleteImages_1 = require("../utils/DeleteImages");
 class SubCategoryService {
     index() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -63,25 +64,30 @@ class SubCategoryService {
             }
         });
     }
-    update(id, data) {
+    update(req) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("update");
+            const subcategory = yield SubCategory_1.SubCategory.findOneBy({
+                id: parseInt(req.params.id),
+            });
+            let imagePath;
             try {
-                const subCategory = yield SubCategory_1.SubCategory.findOne({
-                    where: { id: parseInt(id) },
-                });
-                if (!subCategory) {
-                    return null;
-                }
-                subCategory.name = data.name;
-                subCategory.category = data.categoryId;
-                yield subCategory.save();
-                return subCategory;
+                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "subCategory");
             }
             catch (error) {
-                throw new Error(error instanceof Error
-                    ? error.message
-                    : "An unknown error occurred while deleting category");
+                imagePath = null;
             }
+            const imageTodelete = `public/${subcategory === null || subcategory === void 0 ? void 0 : subcategory.image}`;
+            if (imagePath !== null) {
+                yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
+            }
+            if (subcategory !== null) {
+                subcategory.name = req.body.name;
+                subcategory.category = req.body.categoryId;
+                subcategory.image = imagePath !== null && imagePath !== void 0 ? imagePath : subcategory.image;
+            }
+            yield (subcategory === null || subcategory === void 0 ? void 0 : subcategory.save());
+            return subcategory;
         });
     }
     remove(id) {

@@ -30,6 +30,7 @@ router.get("/products/:id", MenuController.detail);
 router.get("/products/category/:id", MenuController.featchMenuesByCategory);
 router.get("/products/subCategory/:id", MenuController.featchMenuBySubCategory);
 router.get("/categories", CategoryController.getCategories);
+router.get("/sub-categories", SubcategoryController.getAll);
 
 router.get("/mealTimes", MealTimeController.getMealTimes);
 

@@ -51,7 +51,7 @@ class SubcategoryController {
 
   public static updateSubCategory = (req: Request, res: Response) => {
     service
-      .update(req.params.id, req.body)
+      .update(req)
       .then((category) => {
         res.send(category);
       })

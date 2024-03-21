@@ -10,7 +10,7 @@ export class LogoService {
   async getAll(): Promise<Logo[] | null> {
     try {
       const logos = await Logo.find({});
-      console.log(logos);
+      // console.log(logos);
 
       return logos;
     } catch (error) {
@@ -82,7 +82,7 @@ export class LogoService {
 
     if (logo !== null) {
       logo.name = req.body.name;
-      logo.image = imagePath || "";
+      logo.image = imagePath ?? logo.image;
     }
     await logo?.save();
     logo?.loadImagePath();

@@ -34,11 +34,6 @@ __decorate([
     __metadata("design:type", String)
 ], Hero.prototype, "title", void 0);
 __decorate([
-    (0, class_validator_1.MinLength)(2),
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Hero.prototype, "subtitle", void 0);
-__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Hero.prototype, "content", void 0);

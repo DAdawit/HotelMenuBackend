@@ -10,7 +10,7 @@ export class HeroSectionService {
   async getAll(): Promise<Hero[] | null> {
     try {
       const hero = await Hero.find({});
-      console.log(hero);
+      // console.log(hero);
 
       return hero;
     } catch (error) {
@@ -45,7 +45,6 @@ export class HeroSectionService {
       const hero = new Hero();
       hero.slogan = req.body.slogan;
       hero.title = req.body.title;
-      hero.subtitle = req.body.subtitle;
       hero.content = req.body.content;
       hero.image = imagePath || "";
 
@@ -86,9 +85,8 @@ export class HeroSectionService {
     if (hero !== null) {
       hero.slogan = req.body.slogan;
       hero.title = req.body.title;
-      hero.subtitle = req.body.subtitle;
       hero.content = req.body.content;
-      hero.image = imagePath || "";
+      hero.image = imagePath ?? hero.image;
     }
     await hero?.save();
     hero?.loadImagePath();

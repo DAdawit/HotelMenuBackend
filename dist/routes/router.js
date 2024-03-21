@@ -32,6 +32,7 @@ router.get("/products/:id", MenuController_1.default.detail);
 router.get("/products/category/:id", MenuController_1.default.featchMenuesByCategory);
 router.get("/products/subCategory/:id", MenuController_1.default.featchMenuBySubCategory);
 router.get("/categories", CategoryController_1.default.getCategories);
+router.get("/sub-categories", SubCategoryController_1.default.getAll);
 router.get("/mealTimes", MealTimeController_1.default.getMealTimes);
 // Group routes that require authentication
 const authRoutes = (0, express_1.Router)();
