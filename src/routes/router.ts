@@ -22,8 +22,8 @@ router.post("/users", UserController.addUser);
 router.put("/change-profile-pic/:id", UserController.updateProfilePic);
 router.get("/heros", HeroController.getHeroSection);
 router.get("/logos", LogoController.getLogos);
-
-router.get("/products", MenuController.get);
+router.get("/menus", MenuController.get);
+router.get("/mealTimes", MealTimeController.getMealTimes);
 
 router.get("/products/related/:id", MenuController.relatedProducts);
 router.get("/products/:id", MenuController.detail);
@@ -46,10 +46,11 @@ authRoutes.get(
   "/admin/reporeted-products",
   AdminController.getReportedProducts
 );
+authRoutes.get("/admin/menus", MenuController.get);
 authRoutes.post("/admin/add-menu", MenuController.add);
-router.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
+authRoutes.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
+authRoutes.put("/admin/product/:id", MenuController.updateMenu);
 
-authRoutes.put("/admin/product/:id", MenuController.updateProduct);
 authRoutes.put("/admin/order/:id/change-status", OrderController.changeStatus);
 
 authRoutes.get("/admin/heros", HeroController.getHeroSection);
@@ -65,6 +66,10 @@ authRoutes.delete("/admin/logos/:id", LogoController.removeLogo);
 authRoutes.put("/admin/logos/:id", LogoController.updateLogo);
 
 authRoutes.get("/admin/categories", CategoryController.getCategories);
+authRoutes.get(
+  "/admin/categories-with-subcategories",
+  CategoryController.getCategorieswithSubcategories
+);
 authRoutes.post("/admin/categories", CategoryController.addCategory);
 authRoutes.get("/admin/categories/:id", CategoryController.getCategoryById);
 authRoutes.delete("/admin/categories/:id", CategoryController.removeCategory);
@@ -74,7 +79,7 @@ authRoutes.get("/admin/sub-categories", SubcategoryController.getAll);
 authRoutes.post("/admin/sub-categories", SubcategoryController.addSubCategory);
 authRoutes.get("/admin/sub-categories/:id", SubcategoryController.getDetail);
 
-authRoutes.get("/mealTimes", MealTimeController.getMealTimes);
+authRoutes.get("/admin/mealTimes", MealTimeController.getMealTimes);
 authRoutes.post("/admin/mealTimes", MealTimeController.addMealTime);
 authRoutes.get("/admin/mealTimes/:id", MealTimeController.getDetails);
 authRoutes.delete("/admin/mealTimes/:id", MealTimeController.deleteMealTime);

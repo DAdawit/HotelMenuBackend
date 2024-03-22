@@ -40,6 +40,9 @@ class MenuService {
                 const menues = yield Menu_1.Menu.find({
                     take: req.body.take || 15,
                     skip: req.body.skip || 0,
+                    relations: {
+                        available_meal_times: true,
+                    },
                 });
                 return menues;
             }
@@ -110,7 +113,7 @@ class MenuService {
     add(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.body.availableMealLTimesIds);
+                // console.log(req.body.availableMealLTimesIds);
                 const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
                 // console.log(availableMealTimes);
                 const menu = new Menu_1.Menu();
@@ -121,15 +124,19 @@ class MenuService {
                 menu.ingridiants = req.body.ingridiants;
                 menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.category = parseInt(req.body.categoryId);
-                menu.subCategory = parseInt(req.body.subCategoryId);
+                menu.subCategory =
+                    parseInt(req.body.subCategoryId) == 0
+                        ? req.body.subcategories
+                        : null;
                 menu.available_meal_times = availableMealTimes;
-                console.log(menu);
                 try {
                     yield menu.save();
                 }
                 catch (error) {
                     console.log(error);
                 }
+                menu.loadImagePath();
+                console.log(menu);
                 return menu;
             }
             catch (error) {
@@ -163,6 +170,7 @@ class MenuService {
                 menu.price = req.body.price;
                 menu.image = imagePath !== null && imagePath !== void 0 ? imagePath : imageTodelete;
             }
+            menu === null || menu === void 0 ? void 0 : menu.loadImagePath();
             yield (menu === null || menu === void 0 ? void 0 : menu.save());
             return menu;
         });

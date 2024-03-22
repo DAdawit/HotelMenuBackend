@@ -38,9 +38,7 @@ __decorate([
     __metadata("design:type", String)
 ], Menu.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    (0, class_validator_1.IsNotEmpty)({ message: "Description should not be empty" }),
-    (0, class_validator_1.IsString)({ message: "Description must be a string" }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Menu.prototype, "description", void 0);
 __decorate([
@@ -87,8 +85,9 @@ __decorate([
     __metadata("design:type", Category_1.Category)
 ], Menu.prototype, "category", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => SubCategory_1.SubCategory, (subcategory) => subcategory.menu),
-    (0, class_validator_1.ValidateNested)({ message: "SubCategory is required" }),
+    (0, typeorm_1.ManyToOne)(() => SubCategory_1.SubCategory, (subcategory) => subcategory.menu, {
+        nullable: true,
+    }),
     __metadata("design:type", SubCategory_1.SubCategory)
 ], Menu.prototype, "subCategory", void 0);
 __decorate([

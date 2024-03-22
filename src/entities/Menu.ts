@@ -47,9 +47,7 @@ export class Menu extends BaseEntity {
   @IsString({ message: "Name must be a string" })
   name!: string;
 
-  @Column()
-  @IsNotEmpty({ message: "Description should not be empty" })
-  @IsString({ message: "Description must be a string" })
+  @Column({ nullable: true })
   description!: string;
 
   @Column()
@@ -87,8 +85,9 @@ export class Menu extends BaseEntity {
   @ValidateNested({ message: "Category is required" })
   category!: Category;
 
-  @ManyToOne(() => SubCategory, (subcategory) => subcategory.menu)
-  @ValidateNested({ message: "SubCategory is required" })
+  @ManyToOne(() => SubCategory, (subcategory) => subcategory.menu, {
+    nullable: true,
+  })
   subCategory!: SubCategory;
 
   @OneToMany(() => Cart, (cart) => cart.menu)

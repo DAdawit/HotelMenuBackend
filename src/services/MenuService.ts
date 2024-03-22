@@ -34,6 +34,9 @@ export class MenuService {
       const menues = await Menu.find({
         take: req.body.take || 15,
         skip: req.body.skip || 0,
+        relations: {
+          available_meal_times: true,
+        },
       });
       return menues;
     } catch (error) {
@@ -105,7 +108,7 @@ export class MenuService {
 
   async add(req: Request): Promise<Menu | null> {
     try {
-      console.log(req.body.availableMealLTimesIds);
+      // console.log(req.body.availableMealLTimesIds);
 
       const availableMealTimes = await AvailableMealTime.findByIds(
         req.body.available_meal_times
@@ -121,15 +124,20 @@ export class MenuService {
       menu.ingridiants = req.body.ingridiants;
       menu.avaliable_all_day = req.body.avaliable_all_day;
       menu.category = parseInt(req.body.categoryId) as any;
-      menu.subCategory = parseInt(req.body.subCategoryId) as any;
+      menu.subCategory =
+        parseInt(req.body.subCategoryId) == 0
+          ? (req.body.subcategories as any)
+          : null;
       menu.available_meal_times = availableMealTimes;
-      console.log(menu);
 
       try {
         await menu.save();
       } catch (error) {
         console.log(error);
       }
+      menu.loadImagePath();
+      console.log(menu);
+
       return menu;
     } catch (error) {
       throw new Error(
@@ -164,6 +172,7 @@ export class MenuService {
       menu.price = req.body.price;
       menu.image = imagePath ?? imageTodelete;
     }
+    menu?.loadImagePath();
     await menu?.save();
     return menu;
   }

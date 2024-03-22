@@ -35,6 +35,14 @@ CategoryController.getCategories = (req, res) => {
     })
         .catch((err) => [res.send(err)]);
 };
+CategoryController.getCategorieswithSubcategories = (req, res) => {
+    service
+        .categoriesWithSubCategories()
+        .then((categories) => {
+        res.json(categories);
+    })
+        .catch((err) => [res.send(err)]);
+};
 CategoryController.addCategory = (req, res) => {
     service
         .add(req)

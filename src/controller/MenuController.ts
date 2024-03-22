@@ -64,9 +64,7 @@ class ProductController {
     if (!req.body.categoryId) {
       return res.status(400).send({ message: "category required" });
     }
-    if (!req.body.subCategoryId) {
-      return res.status(400).send({ message: "category required" });
-    }
+
     const newMenu = plainToInstance(Menu, req.body);
     const errors = await validate(newMenu);
     const err = validationErrorFormater(errors);
@@ -95,7 +93,7 @@ class ProductController {
       });
   };
 
-  public static updateProduct = (req: Request, res: Response) => {
+  public static updateMenu = (req: Request, res: Response) => {
     service
       .update(req.params.id, req)
       .then((product) => {

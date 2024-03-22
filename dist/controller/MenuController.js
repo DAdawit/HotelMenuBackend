@@ -74,9 +74,6 @@ ProductController.add = (req, res) => __awaiter(void 0, void 0, void 0, function
     if (!req.body.categoryId) {
         return res.status(400).send({ message: "category required" });
     }
-    if (!req.body.subCategoryId) {
-        return res.status(400).send({ message: "category required" });
-    }
     const newMenu = (0, class_transformer_1.plainToInstance)(Menu_1.Menu, req.body);
     const errors = yield (0, class_validator_1.validate)(newMenu);
     const err = (0, validationErrorConverter_1.validationErrorFormater)(errors);
@@ -102,7 +99,7 @@ ProductController.detail = (req, res) => {
         res.send(err);
     });
 };
-ProductController.updateProduct = (req, res) => {
+ProductController.updateMenu = (req, res) => {
     service
         .update(req.params.id, req)
         .then((product) => {
