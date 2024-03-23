@@ -32,10 +32,13 @@ export class MenuService {
   async get(req: Request): Promise<Menu[] | null> {
     try {
       const menues = await Menu.find({
-        take: req.body.take || 15,
+        take: req.body.take || 25,
         skip: req.body.skip || 0,
         relations: {
           available_meal_times: true,
+        },
+        order: {
+          created_at: "DESC",
         },
       });
       return menues;
@@ -177,41 +180,18 @@ export class MenuService {
     return menu;
   }
 
-  async detail(id: string): Promise<ProductDetails | null> {
+  async detail(req: Request): Promise<Menu | null> {
     try {
-      const Productreview = await Review.createQueryBuilder("review")
-        .leftJoinAndSelect("review.user", "user", "user.id = review.userId")
-        .select([
-          "review.id",
-          "review.rate",
-          "user.firstName",
-          "user.profilePic",
-        ])
-        .where("review.productId = :id", { id: parseInt(id) })
-        .getMany();
-
-      let average = 0;
-      const total = Productreview.length;
-      const sum = Productreview.reduce((acc, review) => {
-        return acc + review.rate;
-      }, 0);
-      average = sum / total;
-
       const menu = await Menu.findOne({
-        where: { id: parseInt(id) },
-      });
-      if (!menu) {
-        return null;
-      }
-      let data: ProductDetails = {
-        menu: menu,
-        review: {
-          average: average || 0,
-          total: total,
-          details: Productreview,
+        where: { id: parseInt(req.params.id) },
+        relations: {
+          available_meal_times: true,
+          category: true,
+          subCategory: true,
         },
-      };
-      return data;
+      });
+
+      return menu;
     } catch (error) {
       throw new Error(
         error instanceof Error

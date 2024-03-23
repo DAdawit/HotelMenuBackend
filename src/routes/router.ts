@@ -48,6 +48,7 @@ authRoutes.get(
 );
 authRoutes.get("/admin/menus", MenuController.get);
 authRoutes.post("/admin/add-menu", MenuController.add);
+authRoutes.get("/admin/menus/:id", MenuController.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
 authRoutes.put("/admin/product/:id", MenuController.updateMenu);
 

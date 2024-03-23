@@ -31,8 +31,8 @@ class ProductController {
   public static featchMenuesByCategory = (req: Request, res: Response) => {
     service
       .FeatchMenuesByCategory(req)
-      .then((products) => {
-        res.send(products);
+      .then((menus) => {
+        res.send(menus);
       })
       .catch((err) => {
         res.json(err);
@@ -41,8 +41,8 @@ class ProductController {
   public static featchMenuBySubCategory = (req: Request, res: Response) => {
     service
       .FeatchMenuBySubCategory(req)
-      .then((products) => {
-        res.send(products);
+      .then((menus) => {
+        res.send(menus);
       })
       .catch((err) => {
         res.json(err);
@@ -74,8 +74,8 @@ class ProductController {
 
     service
       .add(req)
-      .then((product) => {
-        res.status(201).send(product);
+      .then((menu) => {
+        res.status(201).send(menu);
       })
       .catch((err) => {
         res.send(err);
@@ -84,9 +84,9 @@ class ProductController {
 
   public static detail = (req: Request, res: Response) => {
     service
-      .detail(req.params.id)
-      .then((product) => {
-        res.send(product);
+      .detail(req)
+      .then((menu) => {
+        res.send(menu);
       })
       .catch((err) => {
         res.send(err);
@@ -96,8 +96,8 @@ class ProductController {
   public static updateMenu = (req: Request, res: Response) => {
     service
       .update(req.params.id, req)
-      .then((product) => {
-        res.send(product);
+      .then((menu) => {
+        res.send(menu);
       })
       .catch((err) => {
         res.send(err);
@@ -128,8 +128,8 @@ class ProductController {
   public static addProductColor = (req: Request, res: Response) => {
     service
       .AddProductColor(req)
-      .then((product) => {
-        res.send(product);
+      .then((menu) => {
+        res.send(menu);
       })
       .catch((err) => {
         res.send(err);

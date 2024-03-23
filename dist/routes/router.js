@@ -44,6 +44,7 @@ authRoutes.put("/admin/users/:id/deactive", AdminController_1.default.deActivate
 authRoutes.get("/admin/reporeted-products", AdminController_1.default.getReportedProducts);
 authRoutes.get("/admin/menus", MenuController_1.default.get);
 authRoutes.post("/admin/add-menu", MenuController_1.default.add);
+authRoutes.get("/admin/menus/:id", MenuController_1.default.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController_1.default.addOrChangeMenuImage);
 authRoutes.put("/admin/product/:id", MenuController_1.default.updateMenu);
 authRoutes.put("/admin/order/:id/change-status", OrderController_1.default.changeStatus);

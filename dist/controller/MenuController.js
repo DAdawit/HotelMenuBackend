@@ -43,8 +43,8 @@ ProductController.get = (req, res) => {
 ProductController.featchMenuesByCategory = (req, res) => {
     service
         .FeatchMenuesByCategory(req)
-        .then((products) => {
-        res.send(products);
+        .then((menus) => {
+        res.send(menus);
     })
         .catch((err) => {
         res.json(err);
@@ -53,8 +53,8 @@ ProductController.featchMenuesByCategory = (req, res) => {
 ProductController.featchMenuBySubCategory = (req, res) => {
     service
         .FeatchMenuBySubCategory(req)
-        .then((products) => {
-        res.send(products);
+        .then((menus) => {
+        res.send(menus);
     })
         .catch((err) => {
         res.json(err);
@@ -82,8 +82,8 @@ ProductController.add = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
     service
         .add(req)
-        .then((product) => {
-        res.status(201).send(product);
+        .then((menu) => {
+        res.status(201).send(menu);
     })
         .catch((err) => {
         res.send(err);
@@ -91,9 +91,9 @@ ProductController.add = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 ProductController.detail = (req, res) => {
     service
-        .detail(req.params.id)
-        .then((product) => {
-        res.send(product);
+        .detail(req)
+        .then((menu) => {
+        res.send(menu);
     })
         .catch((err) => {
         res.send(err);
@@ -102,8 +102,8 @@ ProductController.detail = (req, res) => {
 ProductController.updateMenu = (req, res) => {
     service
         .update(req.params.id, req)
-        .then((product) => {
-        res.send(product);
+        .then((menu) => {
+        res.send(menu);
     })
         .catch((err) => {
         res.send(err);
@@ -132,8 +132,8 @@ ProductController.delete = (req, res) => __awaiter(void 0, void 0, void 0, funct
 ProductController.addProductColor = (req, res) => {
     service
         .AddProductColor(req)
-        .then((product) => {
-        res.send(product);
+        .then((menu) => {
+        res.send(menu);
     })
         .catch((err) => {
         res.send(err);

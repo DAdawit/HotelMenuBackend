@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MenuService = void 0;
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
-const Review_1 = require("../entities/Review");
 const Color_1 = require("../entities/Color");
 const typeorm_1 = require("typeorm");
 const Menu_1 = require("../entities/Menu");
@@ -38,10 +37,13 @@ class MenuService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const menues = yield Menu_1.Menu.find({
-                    take: req.body.take || 15,
+                    take: req.body.take || 25,
                     skip: req.body.skip || 0,
                     relations: {
                         available_meal_times: true,
+                    },
+                    order: {
+                        created_at: "DESC",
                     },
                 });
                 return menues;
@@ -175,40 +177,18 @@ class MenuService {
             return menu;
         });
     }
-    detail(id) {
+    detail(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const Productreview = yield Review_1.Review.createQueryBuilder("review")
-                    .leftJoinAndSelect("review.user", "user", "user.id = review.userId")
-                    .select([
-                    "review.id",
-                    "review.rate",
-                    "user.firstName",
-                    "user.profilePic",
-                ])
-                    .where("review.productId = :id", { id: parseInt(id) })
-                    .getMany();
-                let average = 0;
-                const total = Productreview.length;
-                const sum = Productreview.reduce((acc, review) => {
-                    return acc + review.rate;
-                }, 0);
-                average = sum / total;
                 const menu = yield Menu_1.Menu.findOne({
-                    where: { id: parseInt(id) },
-                });
-                if (!menu) {
-                    return null;
-                }
-                let data = {
-                    menu: menu,
-                    review: {
-                        average: average || 0,
-                        total: total,
-                        details: Productreview,
+                    where: { id: parseInt(req.params.id) },
+                    relations: {
+                        available_meal_times: true,
+                        category: true,
+                        subCategory: true,
                     },
-                };
-                return data;
+                });
+                return menu;
             }
             catch (error) {
                 throw new Error(error instanceof Error
