@@ -8,9 +8,24 @@ import { DeleteImage } from "../utils/DeleteImages";
 export class CategoryService {
   async getAll(): Promise<Category[] | null> {
     try {
-      const categoryRepo = getRepository(Category);
-
-      return await categoryRepo.find({});
+      const categories = await Category.find({});
+      return categories;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
+  async categoriesWithSubCategories(): Promise<Category[] | null> {
+    try {
+      const categories = await Category.find({
+        relations: {
+          subCategory: true,
+        },
+      });
+      return categories;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -47,7 +62,12 @@ export class CategoryService {
       category.name = req.body.name;
       category.image = imagePath || "";
 
-      await category.save();
+      try {
+        await category.save();
+      } catch (error) {
+        console.log(error);
+      }
+
       return category;
     } catch (error) {
       throw new Error(
@@ -79,7 +99,7 @@ export class CategoryService {
 
     if (category !== null) {
       category.name = req.body.name;
-      category.image = imagePath === null ? imageTodelete : imagePath;
+      category.image = imagePath ?? category.image;
     }
     await category?.save();
     return category;

@@ -52,9 +52,6 @@ export class User extends BaseEntity {
   @Column({ default: true })
   isActive!: boolean;
 
-  @Column({ default: false })
-  hasStore!: boolean;
-
   @Column()
   @MinLength(5)
   password!: string;

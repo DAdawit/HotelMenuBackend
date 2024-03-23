@@ -14,7 +14,12 @@ const typeorm_1 = require("typeorm");
 const Category_1 = require("./Category");
 const class_validator_1 = require("class-validator");
 const Menu_1 = require("./Menu");
+const host_1 = require("../utils/host");
 let SubCategory = class SubCategory extends typeorm_1.BaseEntity {
+    loadImagePath() {
+        const baseUrl = (0, host_1.getBaseUrl)();
+        this.imageUrl = baseUrl + this.image;
+    }
 };
 exports.SubCategory = SubCategory;
 __decorate([
@@ -32,6 +37,16 @@ __decorate([
     }),
     __metadata("design:type", Category_1.Category)
 ], SubCategory.prototype, "category", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], SubCategory.prototype, "image", void 0);
+__decorate([
+    (0, typeorm_1.AfterLoad)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SubCategory.prototype, "loadImagePath", null);
 __decorate([
     (0, typeorm_1.OneToMany)(() => Menu_1.Menu, (menu) => menu.subCategory),
     __metadata("design:type", Menu_1.Menu)

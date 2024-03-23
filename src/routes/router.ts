@@ -10,6 +10,9 @@ import WishListController from "../controller/WishListController";
 import ProductRateingController from "../controller/ProductReviewsController";
 import ReportProductController from "../controller/ReportProductController";
 import AdminController from "../controller/AdminController";
+import MealTimeController from "../controller/MealTimeController";
+import HeroController from "../controller/HeroController";
+import LogoController from "../controller/LogoController";
 const router = Router();
 
 // Routes that do not require authentication
@@ -17,29 +20,82 @@ router.post("/login", UserController.LoginUser);
 router.get("/users", UserController.getUsers);
 router.post("/users", UserController.addUser);
 router.put("/change-profile-pic/:id", UserController.updateProfilePic);
+router.get("/heros", HeroController.getHeroSection);
+router.get("/logos", LogoController.getLogos);
+router.get("/menus", MenuController.get);
+router.get("/mealTimes", MealTimeController.getMealTimes);
 
-router.get("/products", MenuController.get);
-// router.get("/products2", ProductController.getPaginatedProducts);
-// router.get("/products/new-arrivals", ProductController.newArrivales);
-// router.get("/products/featured", ProductController.featuredProducts);
 router.get("/products/related/:id", MenuController.relatedProducts);
 router.get("/products/:id", MenuController.detail);
 router.get("/products/category/:id", MenuController.featchMenuesByCategory);
 router.get("/products/subCategory/:id", MenuController.featchMenuBySubCategory);
+router.get("/categories", CategoryController.getCategories);
+router.get("/sub-categories", SubcategoryController.getAll);
 
-router.delete("/store/product/:id", MenuController.delete);
+router.get("/mealTimes", MealTimeController.getMealTimes);
 
 // Group routes that require authentication
 const authRoutes = Router();
 authRoutes.use(authMiddleware);
 
-router.get("/categories", CategoryController.getCategories);
-router.get("/sub-categories", SubcategoryController.getAll);
+authRoutes.get("/admin/users", AdminController.getUsers);
+authRoutes.put("/admin/users/:id/activate", AdminController.activateUser);
+authRoutes.put("/admin/users/:id/deactive", AdminController.deActivateUser);
 
-authRoutes.post("/store/add-product", MenuController.add);
-authRoutes.put("/store/product/:id", MenuController.updateProduct);
-// authRoutes.get("/store/product/:id", ProductController.updateProduct);
-authRoutes.put("/store/order/:id/change-status", OrderController.changeStatus);
+authRoutes.get(
+  "/admin/reporeted-products",
+  AdminController.getReportedProducts
+);
+authRoutes.get("/admin/menus", MenuController.get);
+authRoutes.post("/admin/add-menu", MenuController.add);
+authRoutes.get("/admin/menus/:id", MenuController.detail);
+authRoutes.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
+authRoutes.put("/admin/product/:id", MenuController.updateMenu);
+
+authRoutes.put("/admin/order/:id/change-status", OrderController.changeStatus);
+
+authRoutes.get("/admin/heros", HeroController.getHeroSection);
+authRoutes.post("/admin/heros", HeroController.addHeroSection);
+authRoutes.get("/admin/heros/:id", HeroController.getHeroSectionById);
+authRoutes.delete("/admin/heros/:id", HeroController.removeHeroSection);
+authRoutes.put("/admin/heros/:id", HeroController.updateHeroSection);
+
+authRoutes.get("/admin/logos", LogoController.getLogos);
+authRoutes.post("/admin/logos", LogoController.addLogo);
+authRoutes.get("/admin/logos/:id", LogoController.getLogoById);
+authRoutes.delete("/admin/logos/:id", LogoController.removeLogo);
+authRoutes.put("/admin/logos/:id", LogoController.updateLogo);
+
+authRoutes.get("/admin/categories", CategoryController.getCategories);
+authRoutes.get(
+  "/admin/categories-with-subcategories",
+  CategoryController.getCategorieswithSubcategories
+);
+authRoutes.post("/admin/categories", CategoryController.addCategory);
+authRoutes.get("/admin/categories/:id", CategoryController.getCategoryById);
+authRoutes.delete("/admin/categories/:id", CategoryController.removeCategory);
+authRoutes.put("/admin/categories/:id", CategoryController.updateCategory);
+
+authRoutes.get("/admin/sub-categories", SubcategoryController.getAll);
+authRoutes.post("/admin/sub-categories", SubcategoryController.addSubCategory);
+authRoutes.get("/admin/sub-categories/:id", SubcategoryController.getDetail);
+
+authRoutes.get("/admin/mealTimes", MealTimeController.getMealTimes);
+authRoutes.post("/admin/mealTimes", MealTimeController.addMealTime);
+authRoutes.get("/admin/mealTimes/:id", MealTimeController.getDetails);
+authRoutes.delete("/admin/mealTimes/:id", MealTimeController.deleteMealTime);
+authRoutes.delete(
+  "/admin/sub-categories/:id",
+  SubcategoryController.deleteSubcategory
+);
+authRoutes.put(
+  "/admin/sub-categories/:id",
+  SubcategoryController.updateSubCategory
+);
+
+authRoutes.get("/categories", CategoryController.getCategories);
+authRoutes.get("/sub-categories", SubcategoryController.getAll);
+
 authRoutes.delete("/users/:id", UserController.deleteUser);
 authRoutes.get("/verifyToken", UserController.verifyToken);
 authRoutes.get("/userOrders", OrderController.userOrders);
@@ -76,35 +132,6 @@ authRoutes.post("/report-menu/:id", ReportProductController.addReportedMenu);
 authRoutes.put("/report-menu/:id", ReportProductController.updateReview);
 
 // Adimin routes
-
-authRoutes.get("/admin/users", AdminController.getUsers);
-authRoutes.put("/admin/users/:id/activate", AdminController.activateUser);
-authRoutes.put("/admin/users/:id/deactive", AdminController.deActivateUser);
-authRoutes.get("/admin/stores", AdminController.getStores);
-authRoutes.put("/admin/stores/:id/activate", AdminController.activateStore);
-authRoutes.put("/admin/stores/:id/deactive", AdminController.deActivateStore);
-authRoutes.get(
-  "/admin/reporeted-products",
-  AdminController.getReportedProducts
-);
-
-router.get("/admin/categories", CategoryController.getCategories);
-router.post("/admin/categories", CategoryController.addCategory);
-router.get("/admin/categories/:id", CategoryController.getCategoryById);
-router.delete("/admin/categories/:id", CategoryController.removeCategory);
-router.put("/admin/categories/:id", CategoryController.updateCategory);
-
-router.get("/admin/sub-categories", SubcategoryController.getAll);
-router.post("/admin/sub-categories", SubcategoryController.addSubCategory);
-router.get("/admin/sub-categories/:id", SubcategoryController.getDetail);
-router.delete(
-  "/admin/sub-categories/:id",
-  SubcategoryController.deleteSubcategory
-);
-router.put(
-  "/admin/sub-categories/:id",
-  SubcategoryController.updateSubCategory
-);
 
 router.use(authRoutes);
 

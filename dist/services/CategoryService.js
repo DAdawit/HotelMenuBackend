@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryService = void 0;
-const typeorm_1 = require("typeorm");
 const Category_1 = require("../entities/Category");
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
@@ -18,8 +17,25 @@ class CategoryService {
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const categoryRepo = (0, typeorm_1.getRepository)(Category_1.Category);
-                return yield categoryRepo.find({});
+                const categories = yield Category_1.Category.find({});
+                return categories;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
+    categoriesWithSubCategories() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const categories = yield Category_1.Category.find({
+                    relations: {
+                        subCategory: true,
+                    },
+                });
+                return categories;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -54,7 +70,12 @@ class CategoryService {
                 const category = new Category_1.Category();
                 category.name = req.body.name;
                 category.image = imagePath || "";
-                yield category.save();
+                try {
+                    yield category.save();
+                }
+                catch (error) {
+                    console.log(error);
+                }
                 return category;
             }
             catch (error) {
@@ -84,7 +105,7 @@ class CategoryService {
             }
             if (category !== null) {
                 category.name = req.body.name;
-                category.image = imagePath === null ? imageTodelete : imagePath;
+                category.image = imagePath !== null && imagePath !== void 0 ? imagePath : category.image;
             }
             yield (category === null || category === void 0 ? void 0 : category.save());
             return category;

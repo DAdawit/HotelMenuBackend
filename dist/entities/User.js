@@ -61,10 +61,6 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isActive", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: false }),
-    __metadata("design:type", Boolean)
-], User.prototype, "hasStore", void 0);
-__decorate([
     (0, typeorm_1.Column)(),
     (0, class_validator_1.MinLength)(5),
     __metadata("design:type", String)

@@ -26,7 +26,7 @@ __decorate([
     __metadata("design:type", Number)
 ], OrderItem.prototype, "quantity", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Menu_1.Menu, (menu) => menu.orderItems),
+    (0, typeorm_1.ManyToOne)(() => Menu_1.Menu, (menu) => menu.orderItems, { onDelete: "CASCADE" }),
     __metadata("design:type", Array)
 ], OrderItem.prototype, "menu", void 0);
 __decorate([

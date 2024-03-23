@@ -5,9 +5,10 @@ import { MultipleFileUploade } from "../utils/MultipleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Review } from "../entities/Review";
 import { Color } from "../entities/Color";
-import { Equal, Not, getRepository } from "typeorm";
+import { DataSource, Equal, Not, getRepository } from "typeorm";
 import { PaginationResult, paginate } from "../utils/pagination";
 import { Menu } from "../entities/Menu";
+import { AvailableMealTime } from "../entities/AvaliableMealTime";
 export class MenuService {
   // async GetPaginatedProducts(req: Request): Promise<PaginationResult<Product>> {
   //   const skip = (req.body.skip - 1) * req.body.take;
@@ -31,8 +32,14 @@ export class MenuService {
   async get(req: Request): Promise<Menu[] | null> {
     try {
       const menues = await Menu.find({
-        take: req.body.take || 15,
+        take: req.body.take || 25,
         skip: req.body.skip || 0,
+        relations: {
+          available_meal_times: true,
+        },
+        order: {
+          created_at: "DESC",
+        },
       });
       return menues;
     } catch (error) {
@@ -104,17 +111,36 @@ export class MenuService {
 
   async add(req: Request): Promise<Menu | null> {
     try {
-      // Use the utility function to handle file upload
-      const imagePath = await uploadFile(req, "menues");
+      // console.log(req.body.availableMealLTimesIds);
+
+      const availableMealTimes = await AvailableMealTime.findByIds(
+        req.body.available_meal_times
+      );
+
+      // console.log(availableMealTimes);
+
       const menu = new Menu();
       menu.name = req.body.name;
       menu.description = req.body.description;
       menu.price = req.body.price;
+      menu.special = req.body.special;
+      menu.ingridiants = req.body.ingridiants;
+      menu.avaliable_all_day = req.body.avaliable_all_day;
       menu.category = parseInt(req.body.categoryId) as any;
-      menu.subCategory = parseInt(req.body.subCategoryId) as any;
-      menu.coverImage = imagePath || "";
+      menu.subCategory =
+        parseInt(req.body.subCategoryId) == 0
+          ? (req.body.subcategories as any)
+          : null;
+      menu.available_meal_times = availableMealTimes;
+
+      try {
+        await menu.save();
+      } catch (error) {
+        console.log(error);
+      }
+      menu.loadImagePath();
       console.log(menu);
-      await menu.save();
+
       return menu;
     } catch (error) {
       throw new Error(
@@ -134,11 +160,11 @@ export class MenuService {
     let imagePath;
 
     try {
-      imagePath = await uploadFile(req, "products");
+      imagePath = await uploadFile(req, "menues");
     } catch (error) {
       imagePath = null;
     }
-    const imageTodelete = `public/${menu?.coverImage}`;
+    const imageTodelete = `public/${menu?.image}`;
     if (imagePath !== null) {
       await DeleteImage(imageTodelete);
     }
@@ -147,47 +173,25 @@ export class MenuService {
       menu.name = req.body.name;
       menu.description = req.body.description;
       menu.price = req.body.price;
-      menu.coverImage = imagePath ?? imageTodelete;
+      menu.image = imagePath ?? imageTodelete;
     }
+    menu?.loadImagePath();
     await menu?.save();
     return menu;
   }
 
-  async detail(id: string): Promise<ProductDetails | null> {
+  async detail(req: Request): Promise<Menu | null> {
     try {
-      const Productreview = await Review.createQueryBuilder("review")
-        .leftJoinAndSelect("review.user", "user", "user.id = review.userId")
-        .select([
-          "review.id",
-          "review.rate",
-          "user.firstName",
-          "user.profilePic",
-        ])
-        .where("review.productId = :id", { id: parseInt(id) })
-        .getMany();
-
-      let average = 0;
-      const total = Productreview.length;
-      const sum = Productreview.reduce((acc, review) => {
-        return acc + review.rate;
-      }, 0);
-      average = sum / total;
-
       const menu = await Menu.findOne({
-        where: { id: parseInt(id) },
-      });
-      if (!menu) {
-        return null;
-      }
-      let data: ProductDetails = {
-        menu: menu,
-        review: {
-          average: average || 0,
-          total: total,
-          details: Productreview,
+        where: { id: parseInt(req.params.id) },
+        relations: {
+          available_meal_times: true,
+          category: true,
+          subCategory: true,
         },
-      };
-      return data;
+      });
+
+      return menu;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -229,5 +233,31 @@ export class MenuService {
           : "An unknown error occurred while saving product model."
       );
     }
+  }
+
+  async AddOrChangeMenuImage(req: Request): Promise<Menu | null> {
+    const menu = await Menu.findOneBy({ id: parseInt(req.params.id) });
+
+    let imagePath;
+
+    try {
+      imagePath = await uploadFile(req, "menues");
+    } catch (error) {
+      imagePath = null;
+    }
+    const imageTodelete = `public/${menu?.image}`;
+
+    if (menu?.image !== null) {
+      if (imagePath !== null) {
+        await DeleteImage(imageTodelete);
+      }
+    }
+
+    if (menu !== null) {
+      menu.image = imagePath ? imagePath : "";
+    }
+    await menu?.save();
+    menu?.loadImagePath();
+    return menu;
   }
 }

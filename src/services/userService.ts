@@ -75,6 +75,7 @@ export class UserService {
     if (user !== null) {
       user.profilePic = imagePath ? imagePath : "";
     }
+    user?.loadImagePath();
     await user?.save();
     return user;
   }

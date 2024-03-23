@@ -15,6 +15,17 @@ class CategoryController {
       })
       .catch((err) => [res.send(err)]);
   };
+  public static getCategorieswithSubcategories = (
+    req: Request,
+    res: Response
+  ) => {
+    service
+      .categoriesWithSubCategories()
+      .then((categories) => {
+        res.json(categories);
+      })
+      .catch((err) => [res.send(err)]);
+  };
 
   public static getCategoryById(req: Request, res: Response) {
     service

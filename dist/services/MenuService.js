@@ -12,10 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MenuService = void 0;
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
-const Review_1 = require("../entities/Review");
 const Color_1 = require("../entities/Color");
 const typeorm_1 = require("typeorm");
 const Menu_1 = require("../entities/Menu");
+const AvaliableMealTime_1 = require("../entities/AvaliableMealTime");
 class MenuService {
     // async GetPaginatedProducts(req: Request): Promise<PaginationResult<Product>> {
     //   const skip = (req.body.skip - 1) * req.body.take;
@@ -37,8 +37,14 @@ class MenuService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const menues = yield Menu_1.Menu.find({
-                    take: req.body.take || 15,
+                    take: req.body.take || 25,
                     skip: req.body.skip || 0,
+                    relations: {
+                        available_meal_times: true,
+                    },
+                    order: {
+                        created_at: "DESC",
+                    },
                 });
                 return menues;
             }
@@ -109,17 +115,30 @@ class MenuService {
     add(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // Use the utility function to handle file upload
-                const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
+                // console.log(req.body.availableMealLTimesIds);
+                const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
+                // console.log(availableMealTimes);
                 const menu = new Menu_1.Menu();
                 menu.name = req.body.name;
                 menu.description = req.body.description;
                 menu.price = req.body.price;
+                menu.special = req.body.special;
+                menu.ingridiants = req.body.ingridiants;
+                menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.category = parseInt(req.body.categoryId);
-                menu.subCategory = parseInt(req.body.subCategoryId);
-                menu.coverImage = imagePath || "";
+                menu.subCategory =
+                    parseInt(req.body.subCategoryId) == 0
+                        ? req.body.subcategories
+                        : null;
+                menu.available_meal_times = availableMealTimes;
+                try {
+                    yield menu.save();
+                }
+                catch (error) {
+                    console.log(error);
+                }
+                menu.loadImagePath();
                 console.log(menu);
-                yield menu.save();
                 return menu;
             }
             catch (error) {
@@ -138,12 +157,12 @@ class MenuService {
             });
             let imagePath;
             try {
-                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "products");
+                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
             }
             catch (error) {
                 imagePath = null;
             }
-            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.coverImage}`;
+            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
             if (imagePath !== null) {
                 yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
             }
@@ -151,46 +170,25 @@ class MenuService {
                 menu.name = req.body.name;
                 menu.description = req.body.description;
                 menu.price = req.body.price;
-                menu.coverImage = imagePath !== null && imagePath !== void 0 ? imagePath : imageTodelete;
+                menu.image = imagePath !== null && imagePath !== void 0 ? imagePath : imageTodelete;
             }
+            menu === null || menu === void 0 ? void 0 : menu.loadImagePath();
             yield (menu === null || menu === void 0 ? void 0 : menu.save());
             return menu;
         });
     }
-    detail(id) {
+    detail(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const Productreview = yield Review_1.Review.createQueryBuilder("review")
-                    .leftJoinAndSelect("review.user", "user", "user.id = review.userId")
-                    .select([
-                    "review.id",
-                    "review.rate",
-                    "user.firstName",
-                    "user.profilePic",
-                ])
-                    .where("review.productId = :id", { id: parseInt(id) })
-                    .getMany();
-                let average = 0;
-                const total = Productreview.length;
-                const sum = Productreview.reduce((acc, review) => {
-                    return acc + review.rate;
-                }, 0);
-                average = sum / total;
                 const menu = yield Menu_1.Menu.findOne({
-                    where: { id: parseInt(id) },
-                });
-                if (!menu) {
-                    return null;
-                }
-                let data = {
-                    menu: menu,
-                    review: {
-                        average: average || 0,
-                        total: total,
-                        details: Productreview,
+                    where: { id: parseInt(req.params.id) },
+                    relations: {
+                        available_meal_times: true,
+                        category: true,
+                        subCategory: true,
                     },
-                };
-                return data;
+                });
+                return menu;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -230,6 +228,30 @@ class MenuService {
                     ? error.message
                     : "An unknown error occurred while saving product model.");
             }
+        });
+    }
+    AddOrChangeMenuImage(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const menu = yield Menu_1.Menu.findOneBy({ id: parseInt(req.params.id) });
+            let imagePath;
+            try {
+                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
+            }
+            catch (error) {
+                imagePath = null;
+            }
+            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
+            if ((menu === null || menu === void 0 ? void 0 : menu.image) !== null) {
+                if (imagePath !== null) {
+                    yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
+                }
+            }
+            if (menu !== null) {
+                menu.image = imagePath ? imagePath : "";
+            }
+            yield (menu === null || menu === void 0 ? void 0 : menu.save());
+            menu === null || menu === void 0 ? void 0 : menu.loadImagePath();
+            return menu;
         });
     }
 }

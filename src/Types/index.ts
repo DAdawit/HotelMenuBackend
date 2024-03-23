@@ -64,9 +64,9 @@ export enum OrderStatus {
 }
 
 export enum MealTime {
-  Breakfast = "breakfast",
-  Lunch = "lunch",
-  Dinner = "dinner",
+  Breakfast = "Breakfast",
+  Lunch = "Lunch",
+  Dinner = "Dinner",
 }
 
 export enum Roles {

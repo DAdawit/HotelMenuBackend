@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   CreateDateColumn,
@@ -11,9 +12,12 @@ import {
 import { Category } from "./Category";
 import { MinLength } from "class-validator";
 import { Menu } from "./Menu";
+import { getBaseUrl } from "../utils/host";
 
 @Entity("subCategories")
 export class SubCategory extends BaseEntity {
+  private imageUrl!: string;
+
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -25,6 +29,15 @@ export class SubCategory extends BaseEntity {
     onDelete: "CASCADE",
   })
   category!: Category;
+
+  @Column()
+  image!: string;
+
+  @AfterLoad()
+  loadImagePath() {
+    const baseUrl = getBaseUrl();
+    this.imageUrl = baseUrl + this.image;
+  }
 
   @OneToMany(() => Menu, (menu) => menu.subCategory)
   menu!: Menu;

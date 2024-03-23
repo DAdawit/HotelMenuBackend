@@ -11,10 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const SubCategoryService_1 = require("../services/SubCategoryService");
-const class_transformer_1 = require("class-transformer");
-const SubCategory_1 = require("../entities/SubCategory");
-const class_validator_1 = require("class-validator");
-const validationErrorConverter_1 = require("../utils/validationErrorConverter");
 const service = new SubCategoryService_1.SubCategoryService();
 class SubcategoryController {
 }
@@ -40,14 +36,14 @@ SubcategoryController.getDetail = (req, res) => {
     });
 };
 SubcategoryController.addSubCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const subCategory = (0, class_transformer_1.plainToInstance)(SubCategory_1.SubCategory, req.body);
-    const errors = yield (0, class_validator_1.validate)(subCategory);
-    const err = (0, validationErrorConverter_1.validationErrorFormater)(errors);
-    if (errors.length > 0) {
-        res.status(400).send(err);
-    }
+    // const subCategory = plainToInstance(SubCategory, req.body);
+    // const errors = await validate(subCategory);
+    // const err = validationErrorFormater(errors);
+    // if (errors.length > 0) {
+    //   res.status(400).send(err);
+    // }
     service
-        .store(req.body)
+        .store(req)
         .then((subCategory) => {
         res.send(subCategory);
     })
@@ -57,7 +53,7 @@ SubcategoryController.addSubCategory = (req, res) => __awaiter(void 0, void 0, v
 });
 SubcategoryController.updateSubCategory = (req, res) => {
     service
-        .update(req.params.id, req.body)
+        .update(req)
         .then((category) => {
         res.send(category);
     })

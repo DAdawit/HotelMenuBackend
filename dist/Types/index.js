@@ -17,9 +17,9 @@ var OrderStatus;
 })(OrderStatus || (exports.OrderStatus = OrderStatus = {}));
 var MealTime;
 (function (MealTime) {
-    MealTime["Breakfast"] = "breakfast";
-    MealTime["Lunch"] = "lunch";
-    MealTime["Dinner"] = "dinner";
+    MealTime["Breakfast"] = "Breakfast";
+    MealTime["Lunch"] = "Lunch";
+    MealTime["Dinner"] = "Dinner";
 })(MealTime || (exports.MealTime = MealTime = {}));
 var Roles;
 (function (Roles) {

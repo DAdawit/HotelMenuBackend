@@ -31,16 +31,16 @@ class SubcategoryController {
   };
 
   public static addSubCategory = async (req: Request, res: Response) => {
-    const subCategory = plainToInstance(SubCategory, req.body);
-    const errors = await validate(subCategory);
-    const err = validationErrorFormater(errors);
+    // const subCategory = plainToInstance(SubCategory, req.body);
+    // const errors = await validate(subCategory);
+    // const err = validationErrorFormater(errors);
 
-    if (errors.length > 0) {
-      res.status(400).send(err);
-    }
+    // if (errors.length > 0) {
+    //   res.status(400).send(err);
+    // }
 
     service
-      .store(req.body)
+      .store(req)
       .then((subCategory) => {
         res.send(subCategory);
       })
@@ -51,7 +51,7 @@ class SubcategoryController {
 
   public static updateSubCategory = (req: Request, res: Response) => {
     service
-      .update(req.params.id, req.body)
+      .update(req)
       .then((category) => {
         res.send(category);
       })

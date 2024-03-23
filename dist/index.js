@@ -18,6 +18,8 @@ const router_1 = __importDefault(require("./routes/router"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = 4000;
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, typeorm_1.createConnection)({
@@ -37,7 +39,6 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     app.use(express_1.default.static("public"));
     app.use((0, cors_1.default)());
-    app.use(express_1.default.json());
     app.use("/api", router_1.default);
     app.listen(port, () => {
         console.log("server started on port " + port);
