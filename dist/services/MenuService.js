@@ -117,13 +117,13 @@ class MenuService {
             try {
                 // console.log(req.body.availableMealLTimesIds);
                 const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
-                // console.log(availableMealTimes);
+                // console.log(req.body);
                 const menu = new Menu_1.Menu();
                 menu.name = req.body.name;
                 menu.description = req.body.description;
                 menu.price = req.body.price;
                 menu.special = req.body.special;
-                menu.ingridiants = req.body.ingridiants;
+                menu.ingridiants = req.body.ingredients;
                 menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.category = parseInt(req.body.categoryId);
                 menu.subCategory =
@@ -148,14 +148,14 @@ class MenuService {
             }
         });
     }
-    update(id, req) {
+    update(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const menu = yield Menu_1.Menu.findOneBy({ id: parseInt(req.params.id) });
             const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
             if (!menu) {
                 return null;
             }
-            console.log(req.body);
+            // console.log(req.body);
             menu.name = req === null || req === void 0 ? void 0 : req.body.name;
             menu.description = req.body.description;
             menu.price = req.body.price;

@@ -117,14 +117,14 @@ export class MenuService {
         req.body.available_meal_times
       );
 
-      // console.log(availableMealTimes);
+      // console.log(req.body);
 
       const menu = new Menu();
       menu.name = req.body.name;
       menu.description = req.body.description;
       menu.price = req.body.price;
       menu.special = req.body.special;
-      menu.ingridiants = req.body.ingridiants;
+      menu.ingridiants = req.body.ingredients;
       menu.avaliable_all_day = req.body.avaliable_all_day;
       menu.category = parseInt(req.body.categoryId) as any;
       menu.subCategory =
@@ -151,7 +151,7 @@ export class MenuService {
     }
   }
 
-  async update(id: string, req: Request): Promise<Menu | null> {
+  async update(req: Request): Promise<Menu | null> {
     const menu = await Menu.findOneBy({ id: parseInt(req.params.id) });
 
     const availableMealTimes = await AvailableMealTime.findByIds(
@@ -160,7 +160,7 @@ export class MenuService {
     if (!menu) {
       return null;
     }
-    console.log(req.body);
+    // console.log(req.body);
 
     menu.name = req?.body.name;
     menu.description = req.body.description;

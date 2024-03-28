@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { MealTimeService } from "../services/MealTimeService";
+import { AvailableMealTime } from "../entities/AvaliableMealTime";
+import { DeleteImage } from "../utils/DeleteImages";
 const service = new MealTimeService();
 class MealTimeController {
   public static getMealTimes = (req: Request, res: Response) => {
@@ -45,10 +47,23 @@ class MealTimeController {
       });
   };
 
-  public static deleteMealTime = (req: Request, res: Response) => {
+  public static deleteMealTime = async (req: Request, res: Response) => {
+    const mealtime = await AvailableMealTime.findOne({
+      where: {
+        id: parseInt(req.params.id),
+      },
+    });
+
+    if (!mealtime) {
+      res.status(404).send({ message: "Category not found" });
+    }
     service
       .DeleteMealTime(req)
-      .then(() => {
+      .then(async () => {
+        const imagePath = `public/${mealtime?.image}`;
+        // console.log(imagePath);
+
+        await DeleteImage(imagePath);
         res.send({ message: "mealTime deleted successfully" });
       })
       .catch((err) => {

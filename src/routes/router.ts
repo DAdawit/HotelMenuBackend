@@ -54,7 +54,7 @@ authRoutes.put("/admin/menu/:id", MenuController.updateMenu);
 
 authRoutes.put("/admin/order/:id/change-status", OrderController.changeStatus);
 
-authRoutes.get("/admin/heros", HeroController.getHeroSection);
+authRoutes.get("/admin/heros", HeroController.AdminHeroSection);
 authRoutes.post("/admin/heros", HeroController.addHeroSection);
 authRoutes.get("/admin/heros/:id", HeroController.getHeroSectionById);
 authRoutes.delete("/admin/heros/:id", HeroController.removeHeroSection);
@@ -83,6 +83,7 @@ authRoutes.get("/admin/sub-categories/:id", SubcategoryController.getDetail);
 authRoutes.get("/admin/mealTimes", MealTimeController.getMealTimes);
 authRoutes.post("/admin/mealTimes", MealTimeController.addMealTime);
 authRoutes.get("/admin/mealTimes/:id", MealTimeController.getDetails);
+authRoutes.put("/admin/mealTimes/:id", MealTimeController.updateMealTime);
 authRoutes.delete("/admin/mealTimes/:id", MealTimeController.deleteMealTime);
 authRoutes.delete(
   "/admin/sub-categories/:id",

@@ -74,7 +74,6 @@ class CategoryController {
         .remove(req.params.id)
         .then(async () => {
           const imagePath = `public/${category.image}`;
-          console.log(imagePath);
 
           await DeleteImage(imagePath);
           res.send({ message: "Category deleted successfully" });
