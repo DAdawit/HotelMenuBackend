@@ -139,7 +139,7 @@ export class MenuService {
         console.log(error);
       }
       menu.loadImagePath();
-      console.log(menu);
+      // console.log(menu);
 
       return menu;
     } catch (error) {
@@ -152,31 +152,37 @@ export class MenuService {
   }
 
   async update(id: string, req: Request): Promise<Menu | null> {
-    const menu = await Menu.findOne({
-      where: {
-        id: parseInt(id),
-      },
-    });
-    let imagePath;
+    const menu = await Menu.findOneBy({ id: parseInt(req.params.id) });
+
+    const availableMealTimes = await AvailableMealTime.findByIds(
+      req.body.available_meal_times
+    );
+    if (!menu) {
+      return null;
+    }
+    console.log(req.body);
+
+    menu.name = req?.body.name;
+    menu.description = req.body.description;
+    menu.price = req.body.price;
+    menu.special = req.body.special;
+    menu.ingridiants = req.body.ingredients;
+    menu.avaliable_all_day = req.body.avaliable_all_day;
+    menu.category = parseInt(req.body.categoryId) as any;
+    menu.subCategory =
+      parseInt(req.body.subCategoryId) == 0
+        ? (req.body.subcategories as any)
+        : null;
+    menu.available_meal_times = availableMealTimes;
 
     try {
-      imagePath = await uploadFile(req, "menues");
+      await menu.save();
     } catch (error) {
-      imagePath = null;
+      console.log(error);
     }
-    const imageTodelete = `public/${menu?.image}`;
-    if (imagePath !== null) {
-      await DeleteImage(imageTodelete);
-    }
+    menu.loadImagePath();
+    console.log(menu);
 
-    if (menu !== null) {
-      menu.name = req.body.name;
-      menu.description = req.body.description;
-      menu.price = req.body.price;
-      menu.image = imagePath ?? imageTodelete;
-    }
-    menu?.loadImagePath();
-    await menu?.save();
     return menu;
   }
 

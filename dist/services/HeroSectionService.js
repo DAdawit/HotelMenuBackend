@@ -13,8 +13,33 @@ exports.HeroSectionService = void 0;
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
 const Hero_1 = require("../entities/Hero");
+const Logo_1 = require("../entities/Logo");
 class HeroSectionService {
     getAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const hero = yield Hero_1.Hero.find({ take: 1 });
+                const logo = yield Logo_1.Logo.findOne({
+                    where: {
+                        name: "primary",
+                    },
+                });
+                let resData = {
+                    hero: null,
+                    logo: null,
+                };
+                resData.hero = hero[0];
+                resData.logo = logo;
+                return resData;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
+    AdmingetAll() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const hero = yield Hero_1.Hero.find({});

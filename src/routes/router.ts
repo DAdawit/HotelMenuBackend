@@ -50,7 +50,7 @@ authRoutes.get("/admin/menus", MenuController.get);
 authRoutes.post("/admin/add-menu", MenuController.add);
 authRoutes.get("/admin/menus/:id", MenuController.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
-authRoutes.put("/admin/product/:id", MenuController.updateMenu);
+authRoutes.put("/admin/menu/:id", MenuController.updateMenu);
 
 authRoutes.put("/admin/order/:id/change-status", OrderController.changeStatus);
 
@@ -97,7 +97,7 @@ authRoutes.get("/categories", CategoryController.getCategories);
 authRoutes.get("/sub-categories", SubcategoryController.getAll);
 
 authRoutes.delete("/users/:id", UserController.deleteUser);
-authRoutes.get("/verifyToken", UserController.verifyToken);
+authRoutes.post("/verifyToken", UserController.verifyToken);
 authRoutes.get("/userOrders", OrderController.userOrders);
 authRoutes.post("/order", OrderController.orderProduct);
 authRoutes.post("/cancel-full-order/:id", OrderController.cancelFullOrder);

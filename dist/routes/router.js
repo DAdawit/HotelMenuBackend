@@ -46,7 +46,7 @@ authRoutes.get("/admin/menus", MenuController_1.default.get);
 authRoutes.post("/admin/add-menu", MenuController_1.default.add);
 authRoutes.get("/admin/menus/:id", MenuController_1.default.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController_1.default.addOrChangeMenuImage);
-authRoutes.put("/admin/product/:id", MenuController_1.default.updateMenu);
+authRoutes.put("/admin/menu/:id", MenuController_1.default.updateMenu);
 authRoutes.put("/admin/order/:id/change-status", OrderController_1.default.changeStatus);
 authRoutes.get("/admin/heros", HeroController_1.default.getHeroSection);
 authRoutes.post("/admin/heros", HeroController_1.default.addHeroSection);
@@ -76,7 +76,7 @@ authRoutes.put("/admin/sub-categories/:id", SubCategoryController_1.default.upda
 authRoutes.get("/categories", CategoryController_1.default.getCategories);
 authRoutes.get("/sub-categories", SubCategoryController_1.default.getAll);
 authRoutes.delete("/users/:id", UserController_1.default.deleteUser);
-authRoutes.get("/verifyToken", UserController_1.default.verifyToken);
+authRoutes.post("/verifyToken", UserController_1.default.verifyToken);
 authRoutes.get("/userOrders", OrderController_1.default.userOrders);
 authRoutes.post("/order", OrderController_1.default.orderProduct);
 authRoutes.post("/cancel-full-order/:id", OrderController_1.default.cancelFullOrder);

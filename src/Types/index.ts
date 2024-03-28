@@ -1,4 +1,6 @@
 import { Category } from "../entities/Category";
+import { Hero } from "../entities/Hero";
+import { Logo } from "../entities/Logo";
 import { Menu } from "../entities/Menu";
 import { Review } from "../entities/Review";
 import { User } from "../entities/User";
@@ -222,4 +224,9 @@ export interface Product {
   coverImage: string;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface HeroSectionResponse {
+  hero: Hero | null;
+  logo: Logo | null;
 }

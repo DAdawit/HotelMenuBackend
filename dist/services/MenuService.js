@@ -138,7 +138,7 @@ class MenuService {
                     console.log(error);
                 }
                 menu.loadImagePath();
-                console.log(menu);
+                // console.log(menu);
                 return menu;
             }
             catch (error) {
@@ -150,30 +150,32 @@ class MenuService {
     }
     update(id, req) {
         return __awaiter(this, void 0, void 0, function* () {
-            const menu = yield Menu_1.Menu.findOne({
-                where: {
-                    id: parseInt(id),
-                },
-            });
-            let imagePath;
+            const menu = yield Menu_1.Menu.findOneBy({ id: parseInt(req.params.id) });
+            const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
+            if (!menu) {
+                return null;
+            }
+            console.log(req.body);
+            menu.name = req === null || req === void 0 ? void 0 : req.body.name;
+            menu.description = req.body.description;
+            menu.price = req.body.price;
+            menu.special = req.body.special;
+            menu.ingridiants = req.body.ingredients;
+            menu.avaliable_all_day = req.body.avaliable_all_day;
+            menu.category = parseInt(req.body.categoryId);
+            menu.subCategory =
+                parseInt(req.body.subCategoryId) == 0
+                    ? req.body.subcategories
+                    : null;
+            menu.available_meal_times = availableMealTimes;
             try {
-                imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
+                yield menu.save();
             }
             catch (error) {
-                imagePath = null;
+                console.log(error);
             }
-            const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
-            if (imagePath !== null) {
-                yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
-            }
-            if (menu !== null) {
-                menu.name = req.body.name;
-                menu.description = req.body.description;
-                menu.price = req.body.price;
-                menu.image = imagePath !== null && imagePath !== void 0 ? imagePath : imageTodelete;
-            }
-            menu === null || menu === void 0 ? void 0 : menu.loadImagePath();
-            yield (menu === null || menu === void 0 ? void 0 : menu.save());
+            menu.loadImagePath();
+            console.log(menu);
             return menu;
         });
     }
