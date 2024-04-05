@@ -1,34 +1,40 @@
-import { ProductCreateI, ProductDetails } from "../Types";
+import {
+  MealTimesResponse,
+  MenuByCategoryOut,
+  MenuByMealTimeOut,
+  ProductCreateI,
+  ProductDetails,
+} from "../Types";
 import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { MultipleFileUploade } from "../utils/MultipleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Review } from "../entities/Review";
 import { Color } from "../entities/Color";
-import { DataSource, Equal, Not, getRepository } from "typeorm";
-import { PaginationResult, paginate } from "../utils/pagination";
+import { DataSource, Equal, Like, Not, getRepository } from "typeorm";
+import { Paginate, PaginationResult } from "../utils/pagination";
 import { Menu } from "../entities/Menu";
 import { AvailableMealTime } from "../entities/AvaliableMealTime";
+import { Category } from "../entities/Category";
 export class MenuService {
-  // async GetPaginatedProducts(req: Request): Promise<PaginationResult<Product>> {
-  //   const skip = (req.body.skip - 1) * req.body.take;
+  async get2(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = Menu.createQueryBuilder("menu")
+        .leftJoinAndSelect("menu.category", "category")
+        .leftJoinAndSelect("menu.subCategory", "subCategory")
+        .leftJoinAndSelect("menu.available_meal_times", "available_meal_times")
+        .orderBy("created_at", "DESC");
 
-  //   // Fetching products along with their relationships
-  //   const [products, total] = await Product.findAndCount({
-  //     take: pageSize,
-  //     skip: skip,
-  //   });
+      return Paginate<Menu>(queryBuilder, req);
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching products"
+      );
+    }
+  }
 
-  //   const totalPages = Math.ceil(total / pageSize);
-
-  //   return {
-  //     data: products,
-  //     total: total,
-  //     totalPages: totalPages,
-  //     currentPage: page,
-  //     pageSize: pageSize,
-  //   };
-  // }
   async get(req: Request): Promise<Menu[] | null> {
     try {
       const menues = await Menu.find({
@@ -36,6 +42,8 @@ export class MenuService {
         skip: req.body.skip || 0,
         relations: {
           available_meal_times: true,
+          category: true,
+          subCategory: true,
         },
         order: {
           created_at: "DESC",
@@ -50,13 +58,36 @@ export class MenuService {
       );
     }
   }
-
-  async FeatchMenuesByCategory(req: Request): Promise<Menu[] | null> {
+  // async FeatchMenuesByCategory(req: Request): Promise<Menu[] | null> {
+  //   try {
+  //     const menues = await Menu.find({
+  //       where: { category: { id: parseInt(req.params.id) } },
+  //     });
+  //     return menues;
+  //   } catch (error) {
+  //     throw new Error(
+  //       error instanceof Error
+  //         ? error.message
+  //         : "An unknown error occurred on fetching products by category"
+  //     );
+  //   }
+  // }
+  async FeatchMenuesByCategory(req: Request): Promise<any | null> {
     try {
-      const menues = await Menu.find({
-        where: { category: { id: parseInt(req.params.id) } },
+      const id = parseInt(req.params.id);
+      const category = await Category.findOneBy({
+        id,
       });
-      return menues;
+      // console.log(id);
+
+      const queryBuilder = Menu.createQueryBuilder("menu")
+        .where("menu.categoryId = :id", { id })
+        .leftJoin("menu.category", "category");
+
+      const data = await Paginate<Menu>(queryBuilder, req);
+      const result = { category, ...data };
+
+      return result;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -66,6 +97,25 @@ export class MenuService {
     }
   }
 
+  async FeatchMenuesByMealTime(req: Request): Promise<any | null> {
+    try {
+      const id = parseInt(req.params.id);
+
+      const queryBuilder = Menu.createQueryBuilder("menu")
+        .innerJoin("menu.available_meal_times", "available_meal_times")
+        .where("available_meal_times.id = :id", { id });
+
+      const data = await Paginate<Menu>(queryBuilder, req);
+
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching products by category"
+      );
+    }
+  }
   async FeatchMenuBySubCategory(req: Request): Promise<Menu[] | null> {
     try {
       const menues = await Menu.find({
@@ -77,6 +127,105 @@ export class MenuService {
         error instanceof Error
           ? error.message
           : "An unknown error occurred on fetching products by subCategory"
+      );
+    }
+  }
+
+  async MenuesByMealTime(): Promise<any | null> {
+    try {
+      const mealtimes = await AvailableMealTime.find({});
+      const dataPromises = mealtimes.map(async (item) => {
+        let menu = await Menu.find({
+          where: {
+            available_meal_times: {
+              id: item.id,
+            },
+          },
+          take: 6,
+        });
+        return { ...item, menues: menu }; // Assuming you want to return the item with menus attached
+      });
+
+      const data = await Promise.all(dataPromises); // Wait for all promises to resolve
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching products by category"
+      );
+    }
+  }
+  async MenuesByCategory(): Promise<any | null> {
+    try {
+      const mealtimes = await Category.find({});
+      const dataPromises = mealtimes.map(async (item) => {
+        let menu = await Menu.find({
+          where: {
+            category: {
+              id: item.id,
+            },
+          },
+          take: 6,
+        });
+        return { ...item, menues: menu }; // Assuming you want to return the item with menus attached
+      });
+
+      const data = await Promise.all(dataPromises); // Wait for all promises to resolve
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching products by category"
+      );
+    }
+  }
+
+  async FetchSpecialFoodsMenus(): Promise<Menu[] | null> {
+    try {
+      const menues = await getRepository(Menu)
+        .createQueryBuilder("menu")
+        .leftJoinAndSelect("menu.category", "category")
+        .where("category.name ILike :name", { name: `%food%` })
+        .take(15)
+        .getMany();
+
+      return menues;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching menus by category name"
+      );
+    }
+  }
+  async FetchMainDishes(): Promise<Menu[] | null> {
+    try {
+      const menues = await Menu.find({ where: { mainDishes: true }, take: 5 });
+      return menues;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching menus by category name"
+      );
+    }
+  }
+
+  async FetchAllMainDishes(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = getRepository(Menu)
+        .createQueryBuilder("menu")
+        .where("menu.mainDishes = :mainDishes", { mainDishes: true });
+      const data = await Paginate<Menu>(queryBuilder, req);
+
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching menus by category name"
       );
     }
   }
@@ -117,7 +266,7 @@ export class MenuService {
         req.body.available_meal_times
       );
 
-      // console.log(req.body);
+      console.log(req.body);
 
       const menu = new Menu();
       menu.name = req.body.name;
@@ -126,12 +275,14 @@ export class MenuService {
       menu.special = req.body.special;
       menu.ingridiants = req.body.ingredients;
       menu.avaliable_all_day = req.body.avaliable_all_day;
+      menu.mainDishes = req.body.mainDishes;
       menu.category = parseInt(req.body.categoryId) as any;
       menu.subCategory =
-        parseInt(req.body.subCategoryId) == 0
-          ? (req.body.subcategories as any)
+        parseInt(req.body.subCategoryId) !== 0
+          ? (parseInt(req.body.subCategoryId) as any)
           : null;
       menu.available_meal_times = availableMealTimes;
+      // console.log(menu);
 
       try {
         await menu.save();
@@ -168,12 +319,14 @@ export class MenuService {
     menu.special = req.body.special;
     menu.ingridiants = req.body.ingredients;
     menu.avaliable_all_day = req.body.avaliable_all_day;
+    menu.mainDishes = req.body.mainDishes;
     menu.category = parseInt(req.body.categoryId) as any;
     menu.subCategory =
-      parseInt(req.body.subCategoryId) == 0
-        ? (req.body.subcategories as any)
+      parseInt(req.body.subCategoryId) !== 0
+        ? (parseInt(req.body.subCategoryId) as any)
         : null;
     menu.available_meal_times = availableMealTimes;
+    console.log(menu);
 
     try {
       await menu.save();

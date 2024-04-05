@@ -52,6 +52,20 @@ export class CategoryService {
       );
     }
   }
+  async categoryById(id: string): Promise<Category | null> {
+    try {
+      const category = Category.findOneBy({
+        id: parseInt(id),
+      });
+      return category;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
 
   async add(req: Request): Promise<Category | null> {
     try {

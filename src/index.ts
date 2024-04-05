@@ -2,7 +2,6 @@ import express, { Router } from "express";
 import { createConnection } from "typeorm";
 import router from "./routes/router";
 import cors from "cors";
-import multer from "multer";
 
 const app = express();
 const port: number = 4000;

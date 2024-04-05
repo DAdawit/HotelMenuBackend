@@ -14,7 +14,7 @@ export class HeroSectionService {
       const hero = await Hero.find({ take: 1 });
       const logo = await Logo.findOne({
         where: {
-          name: "primary",
+          name: "Primary",
         },
       });
       let resData: HeroSectionResponse = {

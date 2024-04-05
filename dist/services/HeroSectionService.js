@@ -21,7 +21,7 @@ class HeroSectionService {
                 const hero = yield Hero_1.Hero.find({ take: 1 });
                 const logo = yield Logo_1.Logo.findOne({
                     where: {
-                        name: "primary",
+                        name: "Primary",
                     },
                 });
                 let resData = {

@@ -59,6 +59,10 @@ export class Menu extends BaseEntity {
   @IsBoolean({ message: "Special must be a boolean" })
   special!: boolean;
 
+  @Column({})
+  @IsOptional()
+  mainDishes!: boolean;
+
   @Column({ nullable: true })
   @IsOptional()
   @IsString({ message: "Ingredients must be a string" })

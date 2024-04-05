@@ -25,6 +25,16 @@ class CategoryController {
             res.send(err);
         });
     }
+    static categoryById(req, res) {
+        service
+            .categoryById(req.params.id)
+            .then((category) => {
+            res.send(category);
+        })
+            .catch((err) => {
+            res.send(err);
+        });
+    }
 }
 _a = CategoryController;
 CategoryController.getCategories = (req, res) => {

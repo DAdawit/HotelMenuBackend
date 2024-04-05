@@ -19,7 +19,7 @@ class ProductController {
   // };
   public static get = (req: Request, res: Response) => {
     service
-      .get(req)
+      .get2(req)
       .then((menues) => {
         res.json(menues);
       })
@@ -27,8 +27,38 @@ class ProductController {
         res.json(err);
       });
   };
+  public static fetchMenuesByMealTime = (req: Request, res: Response) => {
+    service
+      .FeatchMenuesByMealTime(req)
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static menuesByCategory = (req: Request, res: Response) => {
+    service
+      .MenuesByCategory()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static menuesByMealTime = (req: Request, res: Response) => {
+    service
+      .MenuesByMealTime()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
 
-  public static featchMenuesByCategory = (req: Request, res: Response) => {
+  public static fetchMenuesByCategory = (req: Request, res: Response) => {
     service
       .FeatchMenuesByCategory(req)
       .then((menus) => {
@@ -41,6 +71,36 @@ class ProductController {
   public static featchMenuBySubCategory = (req: Request, res: Response) => {
     service
       .FeatchMenuBySubCategory(req)
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static fetchSpecialFoodsMenus = (req: Request, res: Response) => {
+    service
+      .FetchSpecialFoodsMenus()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static fetchMainDishes = (req: Request, res: Response) => {
+    service
+      .FetchMainDishes()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static fetchAllMainDishes = (req: Request, res: Response) => {
+    service
+      .FetchAllMainDishes(req)
       .then((menus) => {
         res.send(menus);
       })
@@ -95,7 +155,7 @@ class ProductController {
 
   public static updateMenu = (req: Request, res: Response) => {
     service
-      .update(req.params.id, req)
+      .update(req)
       .then((menu) => {
         res.send(menu);
       })
