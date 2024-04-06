@@ -13,7 +13,12 @@ exports.AvailableMealTime = void 0;
 const typeorm_1 = require("typeorm");
 const Menu_1 = require("./Menu");
 const Types_1 = require("../Types");
+const host_1 = require("../utils/host");
 let AvailableMealTime = class AvailableMealTime extends typeorm_1.BaseEntity {
+    loadImagePath() {
+        const baseUrl = (0, host_1.getBaseUrl)();
+        this.imageUrl = baseUrl + this.image;
+    }
 };
 exports.AvailableMealTime = AvailableMealTime;
 __decorate([
@@ -21,16 +26,23 @@ __decorate([
     __metadata("design:type", Number)
 ], AvailableMealTime.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)("enum", {
-        enum: Types_1.MealTime,
-        unique: true, // Ensures each meal time is only listed once
-    }),
+    (0, typeorm_1.Column)({ unique: true }),
     __metadata("design:type", String)
 ], AvailableMealTime.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], AvailableMealTime.prototype, "image", void 0);
 __decorate([
     (0, typeorm_1.ManyToMany)(() => Menu_1.Menu, (menu) => menu.available_meal_times),
     __metadata("design:type", Array)
 ], AvailableMealTime.prototype, "menues", void 0);
+__decorate([
+    (0, typeorm_1.AfterLoad)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AvailableMealTime.prototype, "loadImagePath", null);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

@@ -11,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MealTimeService = void 0;
 const AvaliableMealTime_1 = require("../entities/AvaliableMealTime");
+const SingleFileUploade_1 = require("../utils/SingleFileUploade");
+const DeleteImages_1 = require("../utils/DeleteImages");
 class MealTimeService {
     GetMealTimes() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -28,9 +30,19 @@ class MealTimeService {
     AddMealTime(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("hello mother fucker");
+                const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "mealtime");
                 const mealTime = new AvaliableMealTime_1.AvailableMealTime();
                 mealTime.name = req.body.name;
-                yield mealTime.save();
+                mealTime.image = imagePath || "";
+                console.log(mealTime);
+                try {
+                    yield mealTime.save();
+                }
+                catch (error) {
+                    console.log(error);
+                }
+                mealTime.loadImagePath();
                 return mealTime;
             }
             catch (error) {
@@ -58,14 +70,27 @@ class MealTimeService {
     UpdateMealTime(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const mealTime = yield AvaliableMealTime_1.AvailableMealTime.findOneBy({
-                    id: parseInt(req.params.id),
+                const mealTime = yield AvaliableMealTime_1.AvailableMealTime.findOne({
+                    where: {
+                        id: parseInt(req.params.id),
+                    },
                 });
-                if (!mealTime) {
-                    return null;
+                let imagePath;
+                try {
+                    imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "mealtime");
                 }
-                mealTime.name = req.body.name;
-                yield mealTime.save();
+                catch (error) {
+                    imagePath = null;
+                }
+                const imageTodelete = `public/${mealTime === null || mealTime === void 0 ? void 0 : mealTime.image}`;
+                if (imagePath !== null) {
+                    yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
+                }
+                if (mealTime !== null) {
+                    mealTime.name = req.body.name;
+                    mealTime.image = imagePath !== null && imagePath !== void 0 ? imagePath : mealTime.image;
+                }
+                yield (mealTime === null || mealTime === void 0 ? void 0 : mealTime.save());
                 return mealTime;
             }
             catch (error) {

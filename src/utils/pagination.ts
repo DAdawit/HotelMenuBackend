@@ -1,9 +1,5 @@
 import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
-
-interface PaginationOptions {
-  page: number;
-  pageSize: number;
-}
+import { Request } from "express";
 
 export interface PaginationResult<T> {
   data: T[];
@@ -13,22 +9,38 @@ export interface PaginationResult<T> {
   pageSize: number;
 }
 
-export async function paginate<T extends ObjectLiteral>(
+export async function Paginate<T extends ObjectLiteral>(
   queryBuilder: SelectQueryBuilder<T>,
-  { page, pageSize }: PaginationOptions
-): Promise<PaginationResult<T>> {
-  const total = await queryBuilder.getCount();
-  const totalPages = Math.ceil(total / pageSize);
-  const data = await queryBuilder
-    .offset((page - 1) * pageSize)
-    .limit(pageSize)
-    .getMany();
+  req: Request
+): Promise<{
+  data: T[];
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+  perPage: number;
+  currentPage: number;
+}> {
+  const page: number = parseInt(req.query.page as string) || 1;
+  const perPage: number = parseInt(req.query.limit as string) || 2;
+  const offset = (page - 1) * perPage;
 
+  const [data, total] = await queryBuilder
+    .skip(offset)
+    .take(perPage)
+    .getManyAndCount();
+
+  const totalPages = Math.ceil(total / perPage);
+  const hasNext = page < totalPages;
+  const hasPrev = page > 1;
+  const currentPage = page;
   return {
     data,
     total,
     totalPages,
-    currentPage: page,
-    pageSize,
+    hasNext,
+    hasPrev,
+    perPage,
+    currentPage,
   };
 }

@@ -5,9 +5,35 @@ import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Hero } from "../entities/Hero";
+import { HeroSectionResponse } from "../Types";
+import { Logo } from "../entities/Logo";
 
 export class HeroSectionService {
-  async getAll(): Promise<Hero[] | null> {
+  async getAll(): Promise<HeroSectionResponse | null> {
+    try {
+      const hero = await Hero.find({ take: 1 });
+      const logo = await Logo.findOne({
+        where: {
+          name: "Primary",
+        },
+      });
+      let resData: HeroSectionResponse = {
+        hero: null,
+        logo: null,
+      };
+      resData.hero = hero[0];
+      resData.logo = logo;
+
+      return resData;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
+  async AdmingetAll(): Promise<Hero[] | null> {
     try {
       const hero = await Hero.find({});
       // console.log(hero);

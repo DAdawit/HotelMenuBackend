@@ -1,6 +1,8 @@
 import { Request } from "express";
 import { AvailableMealTime } from "../entities/AvaliableMealTime";
 import { DataSource } from "typeorm";
+import { uploadFile } from "../utils/SingleFileUploade";
+import { DeleteImage } from "../utils/DeleteImages";
 
 export class MealTimeService {
   async GetMealTimes(): Promise<AvailableMealTime[]> {
@@ -18,9 +20,22 @@ export class MealTimeService {
 
   async AddMealTime(req: Request): Promise<AvailableMealTime> {
     try {
+      console.log("hello mother fucker");
+
+      const imagePath = await uploadFile(req, "mealtime");
+
       const mealTime = new AvailableMealTime();
       mealTime.name = req.body.name;
-      await mealTime.save();
+      mealTime.image = imagePath || "";
+
+      console.log(mealTime);
+      try {
+        await mealTime.save();
+      } catch (error) {
+        console.log(error);
+      }
+
+      mealTime.loadImagePath();
       return mealTime;
     } catch (error) {
       throw new Error(
@@ -47,14 +62,29 @@ export class MealTimeService {
   }
   async UpdateMealTime(req: Request): Promise<AvailableMealTime | null> {
     try {
-      const mealTime = await AvailableMealTime.findOneBy({
-        id: parseInt(req.params.id),
+      const mealTime = await AvailableMealTime.findOne({
+        where: {
+          id: parseInt(req.params.id),
+        },
       });
-      if (!mealTime) {
-        return null;
+
+      let imagePath;
+
+      try {
+        imagePath = await uploadFile(req, "mealtime");
+      } catch (error) {
+        imagePath = null;
       }
-      mealTime.name = req.body.name;
-      await mealTime.save();
+      const imageTodelete = `public/${mealTime?.image}`;
+      if (imagePath !== null) {
+        await DeleteImage(imageTodelete);
+      }
+
+      if (mealTime !== null) {
+        mealTime.name = req.body.name;
+        mealTime.image = imagePath ?? mealTime.image;
+      }
+      await mealTime?.save();
       return mealTime;
     } catch (error) {
       throw new Error(

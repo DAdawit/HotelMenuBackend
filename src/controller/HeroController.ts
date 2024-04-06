@@ -17,6 +17,15 @@ class HeroController {
       .catch((err) => [res.send(err)]);
   };
 
+  public static AdminHeroSection = (req: Request, res: Response) => {
+    service
+      .AdmingetAll()
+      .then((hero) => {
+        res.json(hero);
+      })
+      .catch((err) => [res.send(err)]);
+  };
+
   public static getHeroSectionById(req: Request, res: Response) {
     service
       .getById(req)

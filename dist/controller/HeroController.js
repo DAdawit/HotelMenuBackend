@@ -35,6 +35,14 @@ HeroController.getHeroSection = (req, res) => {
     })
         .catch((err) => [res.send(err)]);
 };
+HeroController.AdminHeroSection = (req, res) => {
+    service
+        .AdmingetAll()
+        .then((hero) => {
+        res.json(hero);
+    })
+        .catch((err) => [res.send(err)]);
+};
 HeroController.addHeroSection = (req, res) => {
     service
         .add(req)

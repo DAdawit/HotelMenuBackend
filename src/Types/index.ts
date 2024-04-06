@@ -1,7 +1,11 @@
+import { AvailableMealTime } from "../entities/AvaliableMealTime";
 import { Category } from "../entities/Category";
+import { Hero } from "../entities/Hero";
+import { Logo } from "../entities/Logo";
 import { Menu } from "../entities/Menu";
 import { Review } from "../entities/Review";
 import { User } from "../entities/User";
+import { PaginationResult } from "../utils/pagination";
 
 export interface DeleteI {
   raw: any;
@@ -222,4 +226,33 @@ export interface Product {
   coverImage: string;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface HeroSectionResponse {
+  hero: Hero | null;
+  logo: Logo | null;
+}
+
+export interface MenuByMealTimeOut {
+  mealTime: AvailableMealTime | null;
+  menus: Menu[] | null;
+}
+
+export interface MenuByCategoryOut {
+  category: Category | null;
+  menus: Menu[] | null;
+}
+
+export interface MealTimesResponse {
+  id: number;
+  name: string;
+  image: string;
+  created_at: string;
+  updated_at: string;
+  imageUrl: string;
+  menues: Menu[];
+}
+
+export interface MenuPaginationWithCategory extends PaginationResult<Menu> {
+  category?: Category; // Assuming Category is the correct type
 }

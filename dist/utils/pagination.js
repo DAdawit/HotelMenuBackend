@@ -9,22 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paginate = void 0;
-function paginate(queryBuilder, { page, pageSize }) {
+exports.Paginate = void 0;
+function Paginate(queryBuilder, req) {
     return __awaiter(this, void 0, void 0, function* () {
-        const total = yield queryBuilder.getCount();
-        const totalPages = Math.ceil(total / pageSize);
-        const data = yield queryBuilder
-            .offset((page - 1) * pageSize)
-            .limit(pageSize)
-            .getMany();
+        const page = parseInt(req.query.page) || 1;
+        const perPage = parseInt(req.query.limit) || 2;
+        const offset = (page - 1) * perPage;
+        const [data, total] = yield queryBuilder
+            .skip(offset)
+            .take(perPage)
+            .getManyAndCount();
+        const totalPages = Math.ceil(total / perPage);
+        const hasNext = page < totalPages;
+        const hasPrev = page > 1;
+        const currentPage = page;
         return {
             data,
             total,
             totalPages,
-            currentPage: page,
-            pageSize,
+            hasNext,
+            hasPrev,
+            perPage,
+            currentPage,
         };
     });
 }
-exports.paginate = paginate;
+exports.Paginate = Paginate;

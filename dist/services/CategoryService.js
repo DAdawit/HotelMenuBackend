@@ -62,6 +62,21 @@ class CategoryService {
             }
         });
     }
+    categoryById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const category = Category_1.Category.findOneBy({
+                    id: parseInt(id),
+                });
+                return category;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
     add(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

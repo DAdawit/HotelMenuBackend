@@ -32,7 +32,7 @@ _a = ProductController;
 // };
 ProductController.get = (req, res) => {
     service
-        .get(req)
+        .get2(req)
         .then((menues) => {
         res.json(menues);
     })
@@ -40,7 +40,37 @@ ProductController.get = (req, res) => {
         res.json(err);
     });
 };
-ProductController.featchMenuesByCategory = (req, res) => {
+ProductController.fetchMenuesByMealTime = (req, res) => {
+    service
+        .FeatchMenuesByMealTime(req)
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.menuesByCategory = (req, res) => {
+    service
+        .MenuesByCategory()
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.menuesByMealTime = (req, res) => {
+    service
+        .MenuesByMealTime()
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.fetchMenuesByCategory = (req, res) => {
     service
         .FeatchMenuesByCategory(req)
         .then((menus) => {
@@ -53,6 +83,46 @@ ProductController.featchMenuesByCategory = (req, res) => {
 ProductController.featchMenuBySubCategory = (req, res) => {
     service
         .FeatchMenuBySubCategory(req)
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.fetchSpecialFoodsMenus = (req, res) => {
+    service
+        .FetchSpecialFoodsMenus()
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.fetchAllSpecialFoodsMenus = (req, res) => {
+    service
+        .FetchAllSpecialFoodsMenus(req)
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.fetchMainDishes = (req, res) => {
+    service
+        .FetchMainDishes()
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
+ProductController.fetchAllMainDishes = (req, res) => {
+    service
+        .FetchAllMainDishes(req)
         .then((menus) => {
         res.send(menus);
     })
@@ -101,7 +171,7 @@ ProductController.detail = (req, res) => {
 };
 ProductController.updateMenu = (req, res) => {
     service
-        .update(req.params.id, req)
+        .update(req)
         .then((menu) => {
         res.send(menu);
     })

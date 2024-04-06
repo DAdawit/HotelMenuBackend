@@ -25,6 +25,16 @@ class CategoryController {
             res.send(err);
         });
     }
+    static categoryById(req, res) {
+        service
+            .categoryById(req.params.id)
+            .then((category) => {
+            res.send(category);
+        })
+            .catch((err) => {
+            res.send(err);
+        });
+    }
 }
 _a = CategoryController;
 CategoryController.getCategories = (req, res) => {
@@ -77,7 +87,6 @@ CategoryController.removeCategory = (req, res) => __awaiter(void 0, void 0, void
             .remove(req.params.id)
             .then(() => __awaiter(void 0, void 0, void 0, function* () {
             const imagePath = `public/${category.image}`;
-            console.log(imagePath);
             yield (0, DeleteImages_1.DeleteImage)(imagePath);
             res.send({ message: "Category deleted successfully" });
         }))
