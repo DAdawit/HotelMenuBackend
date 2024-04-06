@@ -225,6 +225,22 @@ class MenuService {
             }
         });
     }
+    FetchAllSpecialFoodsMenus(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = (0, typeorm_1.getRepository)(Menu_1.Menu)
+                    .createQueryBuilder("menu")
+                    .where("menu.special = :special", { special: true });
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching menus by category name");
+            }
+        });
+    }
     RelatedProducts(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

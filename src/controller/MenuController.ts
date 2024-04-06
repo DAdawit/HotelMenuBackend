@@ -88,6 +88,16 @@ class ProductController {
         res.json(err);
       });
   };
+  public static fetchAllSpecialFoodsMenus = (req: Request, res: Response) => {
+    service
+      .FetchAllSpecialFoodsMenus(req)
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
   public static fetchMainDishes = (req: Request, res: Response) => {
     service
       .FetchMainDishes()

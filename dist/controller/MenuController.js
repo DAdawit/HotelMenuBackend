@@ -100,6 +100,16 @@ ProductController.fetchSpecialFoodsMenus = (req, res) => {
         res.json(err);
     });
 };
+ProductController.fetchAllSpecialFoodsMenus = (req, res) => {
+    service
+        .FetchAllSpecialFoodsMenus(req)
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
 ProductController.fetchMainDishes = (req, res) => {
     service
         .FetchMainDishes()

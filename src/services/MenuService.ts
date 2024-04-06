@@ -230,6 +230,23 @@ export class MenuService {
     }
   }
 
+  async FetchAllSpecialFoodsMenus(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = getRepository(Menu)
+        .createQueryBuilder("menu")
+        .where("menu.special = :special", { special: true });
+      const data = await Paginate<Menu>(queryBuilder, req);
+
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching menus by category name"
+      );
+    }
+  }
+
   async RelatedProducts(req: Request): Promise<Menu[] | null> {
     try {
       const menu = await Menu.findOne({
