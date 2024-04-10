@@ -83,7 +83,7 @@ authRoutes.get("/admin/logos/:id", LogoController.getLogoById);
 authRoutes.delete("/admin/logos/:id", LogoController.removeLogo);
 authRoutes.put("/admin/logos/:id", LogoController.updateLogo);
 
-authRoutes.get("/admin/categories", CategoryController.getCategories);
+authRoutes.get("/admin/categories", CategoryController.AdmingetCategories);
 authRoutes.get(
   "/admin/categories-with-subcategories",
   CategoryController.getCategorieswithSubcategories

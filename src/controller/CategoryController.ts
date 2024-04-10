@@ -15,6 +15,15 @@ class CategoryController {
       })
       .catch((err) => [res.send(err)]);
   };
+
+  public static AdmingetCategories = (req: Request, res: Response) => {
+    service
+      .admingetCategories(req)
+      .then((categories) => {
+        res.json(categories);
+      })
+      .catch((err) => [res.send(err)]);
+  };
   public static getCategorieswithSubcategories = (
     req: Request,
     res: Response

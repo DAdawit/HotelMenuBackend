@@ -45,6 +45,14 @@ CategoryController.getCategories = (req, res) => {
     })
         .catch((err) => [res.send(err)]);
 };
+CategoryController.AdmingetCategories = (req, res) => {
+    service
+        .admingetCategories(req)
+        .then((categories) => {
+        res.json(categories);
+    })
+        .catch((err) => [res.send(err)]);
+};
 CategoryController.getCategorieswithSubcategories = (req, res) => {
     service
         .categoriesWithSubCategories()

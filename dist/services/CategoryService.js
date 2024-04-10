@@ -13,12 +13,27 @@ exports.CategoryService = void 0;
 const Category_1 = require("../entities/Category");
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
+const pagination_1 = require("../utils/pagination");
 class CategoryService {
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const categories = yield Category_1.Category.find({});
                 return categories;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
+    admingetCategories(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = Category_1.Category.createQueryBuilder().orderBy("created_at", "DESC");
+                const data = (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
