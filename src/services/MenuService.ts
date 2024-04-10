@@ -2,7 +2,7 @@ import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Color } from "../entities/Color";
-import { DataSource, Equal, Not, getRepository } from "typeorm";
+import { Equal, Not, getRepository } from "typeorm";
 import { Paginate } from "../utils/pagination";
 import { Menu } from "../entities/Menu";
 import { AvailableMealTime } from "../entities/AvaliableMealTime";
@@ -11,25 +11,14 @@ import { SubCategory } from "../entities/SubCategory";
 export class MenuService {
   async get2(req: Request): Promise<any | null> {
     try {
-      const data = await Menu.find({
-        relations: {
-          category: true,
-          subCategory: true,
-          available_meal_times: true,
-        },
-      });
-      // console.log(data);
-
       const queryBuilder = Menu.createQueryBuilder("menu")
         .leftJoinAndSelect("menu.category", "category")
         .leftJoinAndSelect("menu.subCategory", "subCategory")
         .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
         .orderBy("menu.created_at", "DESC");
 
-      // Execute the query or perform further operations...
-
-      return Paginate<Menu>(queryBuilder, req);
-      // return data;
+      const data = Paginate<Menu>(queryBuilder, req);
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error

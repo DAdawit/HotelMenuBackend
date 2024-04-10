@@ -7,6 +7,7 @@ import { DeleteImage } from "../utils/DeleteImages";
 import { Hero } from "../entities/Hero";
 import { HeroSectionResponse } from "../Types";
 import { Logo } from "../entities/Logo";
+import { Paginate } from "../utils/pagination";
 
 export class HeroSectionService {
   async getAll(): Promise<HeroSectionResponse | null> {
@@ -47,12 +48,15 @@ export class HeroSectionService {
       );
     }
   }
-  async AdmingetAll(): Promise<Hero[] | null> {
+  async AdmingetAll(req: Request): Promise<any | null> {
     try {
-      const hero = await Hero.find({});
-      // console.log(hero);
+      const queryBuilder = Hero.createQueryBuilder().orderBy(
+        "created_at",
+        "DESC"
+      );
+      const data = Paginate<Hero>(queryBuilder, req);
 
-      return hero;
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error

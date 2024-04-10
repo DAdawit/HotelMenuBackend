@@ -45,7 +45,7 @@ HeroController.getAllHeroSection = (req, res) => {
 };
 HeroController.AdminHeroSection = (req, res) => {
     service
-        .AdmingetAll()
+        .AdmingetAll(req)
         .then((hero) => {
         res.json(hero);
     })

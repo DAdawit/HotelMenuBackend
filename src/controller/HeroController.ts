@@ -27,7 +27,7 @@ class HeroController {
 
   public static AdminHeroSection = (req: Request, res: Response) => {
     service
-      .AdmingetAll()
+      .AdmingetAll(req)
       .then((hero) => {
         res.json(hero);
       })

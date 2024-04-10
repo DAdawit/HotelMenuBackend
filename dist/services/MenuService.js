@@ -23,22 +23,13 @@ class MenuService {
     get2(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const data = yield Menu_1.Menu.find({
-                    relations: {
-                        category: true,
-                        subCategory: true,
-                        available_meal_times: true,
-                    },
-                });
-                // console.log(data);
                 const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
                     .leftJoinAndSelect("menu.category", "category")
                     .leftJoinAndSelect("menu.subCategory", "subCategory")
                     .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
                     .orderBy("menu.created_at", "DESC");
-                // Execute the query or perform further operations...
-                return (0, pagination_1.Paginate)(queryBuilder, req);
-                // return data;
+                const data = (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
