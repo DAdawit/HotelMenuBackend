@@ -33,6 +33,20 @@ export class HeroSectionService {
       );
     }
   }
+  async getAllHeroSection(): Promise<Hero[] | null> {
+    try {
+      const hero = await Hero.find({});
+      // console.log(hero);
+
+      return hero;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
   async AdmingetAll(): Promise<Hero[] | null> {
     try {
       const hero = await Hero.find({});

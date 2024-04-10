@@ -1,31 +1,35 @@
-import {
-  MealTimesResponse,
-  MenuByCategoryOut,
-  MenuByMealTimeOut,
-  ProductCreateI,
-  ProductDetails,
-} from "../Types";
 import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
-import { MultipleFileUploade } from "../utils/MultipleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
-import { Review } from "../entities/Review";
 import { Color } from "../entities/Color";
-import { DataSource, Equal, Like, Not, getRepository } from "typeorm";
-import { Paginate, PaginationResult } from "../utils/pagination";
+import { DataSource, Equal, Not, getRepository } from "typeorm";
+import { Paginate } from "../utils/pagination";
 import { Menu } from "../entities/Menu";
 import { AvailableMealTime } from "../entities/AvaliableMealTime";
 import { Category } from "../entities/Category";
+import { SubCategory } from "../entities/SubCategory";
 export class MenuService {
   async get2(req: Request): Promise<any | null> {
     try {
+      const data = await Menu.find({
+        relations: {
+          category: true,
+          subCategory: true,
+          available_meal_times: true,
+        },
+      });
+      // console.log(data);
+
       const queryBuilder = Menu.createQueryBuilder("menu")
         .leftJoinAndSelect("menu.category", "category")
         .leftJoinAndSelect("menu.subCategory", "subCategory")
-        .leftJoinAndSelect("menu.available_meal_times", "available_meal_times")
-        .orderBy("created_at", "DESC");
+        .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
+        .orderBy("menu.created_at", "DESC");
+
+      // Execute the query or perform further operations...
 
       return Paginate<Menu>(queryBuilder, req);
+      // return data;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -58,27 +62,13 @@ export class MenuService {
       );
     }
   }
-  // async FeatchMenuesByCategory(req: Request): Promise<Menu[] | null> {
-  //   try {
-  //     const menues = await Menu.find({
-  //       where: { category: { id: parseInt(req.params.id) } },
-  //     });
-  //     return menues;
-  //   } catch (error) {
-  //     throw new Error(
-  //       error instanceof Error
-  //         ? error.message
-  //         : "An unknown error occurred on fetching products by category"
-  //     );
-  //   }
-  // }
+
   async FeatchMenuesByCategory(req: Request): Promise<any | null> {
     try {
       const id = parseInt(req.params.id);
       const category = await Category.findOneBy({
         id,
       });
-      // console.log(id);
 
       const queryBuilder = Menu.createQueryBuilder("menu")
         .where("menu.categoryId = :id", { id })
@@ -88,6 +78,31 @@ export class MenuService {
       const result = { category, ...data };
 
       return result;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching products by category"
+      );
+    }
+  }
+  async FeatchMenuesBySubCategory(req: Request): Promise<any | null> {
+    try {
+      console.log("hello");
+
+      const id = parseInt(req.params.id);
+      const category = await SubCategory.findOneBy({
+        id,
+      });
+      console.log(category);
+
+      const queryBuilder = Menu.createQueryBuilder("menu")
+        .where("menu.subCategoryId = :id", { id })
+        .leftJoin("menu.subCategory", "subCategory");
+
+      const data = await Paginate<Menu>(queryBuilder, req);
+
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -156,6 +171,33 @@ export class MenuService {
       );
     }
   }
+
+  async MenuesBySubCategory(): Promise<any | null> {
+    try {
+      const mealtimes = await SubCategory.find({});
+      const dataPromises = mealtimes.map(async (item) => {
+        let menu = await Menu.find({
+          where: {
+            subCategory: {
+              id: item.id,
+            },
+          },
+          take: 25,
+        });
+        return { ...item, menues: menu }; // Assuming you want to return the item with menus attached
+      });
+
+      const data = await Promise.all(dataPromises); // Wait for all promises to resolve
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching products by category"
+      );
+    }
+  }
+
   async MenuesByCategory(): Promise<any | null> {
     try {
       const mealtimes = await Category.find({});

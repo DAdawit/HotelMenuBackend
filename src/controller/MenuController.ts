@@ -58,6 +58,17 @@ class ProductController {
       });
   };
 
+  public static menuesBySubCategory = (req: Request, res: Response) => {
+    service
+      .MenuesBySubCategory()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+
   public static fetchMenuesByCategory = (req: Request, res: Response) => {
     service
       .FeatchMenuesByCategory(req)
@@ -68,9 +79,20 @@ class ProductController {
         res.json(err);
       });
   };
+
+  public static featchMenuesBySubCategory = (req: Request, res: Response) => {
+    service
+      .FeatchMenuesBySubCategory(req)
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
   public static featchMenuBySubCategory = (req: Request, res: Response) => {
     service
-      .FeatchMenuBySubCategory(req)
+      .FeatchMenuesBySubCategory(req)
       .then((menus) => {
         res.send(menus);
       })

@@ -18,16 +18,27 @@ const pagination_1 = require("../utils/pagination");
 const Menu_1 = require("../entities/Menu");
 const AvaliableMealTime_1 = require("../entities/AvaliableMealTime");
 const Category_1 = require("../entities/Category");
+const SubCategory_1 = require("../entities/SubCategory");
 class MenuService {
     get2(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const data = yield Menu_1.Menu.find({
+                    relations: {
+                        category: true,
+                        subCategory: true,
+                        available_meal_times: true,
+                    },
+                });
+                // console.log(data);
                 const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
                     .leftJoinAndSelect("menu.category", "category")
                     .leftJoinAndSelect("menu.subCategory", "subCategory")
-                    .leftJoinAndSelect("menu.available_meal_times", "available_meal_times")
-                    .orderBy("created_at", "DESC");
+                    .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
+                    .orderBy("menu.created_at", "DESC");
+                // Execute the query or perform further operations...
                 return (0, pagination_1.Paginate)(queryBuilder, req);
+                // return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -60,20 +71,6 @@ class MenuService {
             }
         });
     }
-    // async FeatchMenuesByCategory(req: Request): Promise<Menu[] | null> {
-    //   try {
-    //     const menues = await Menu.find({
-    //       where: { category: { id: parseInt(req.params.id) } },
-    //     });
-    //     return menues;
-    //   } catch (error) {
-    //     throw new Error(
-    //       error instanceof Error
-    //         ? error.message
-    //         : "An unknown error occurred on fetching products by category"
-    //     );
-    //   }
-    // }
     FeatchMenuesByCategory(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -81,13 +78,34 @@ class MenuService {
                 const category = yield Category_1.Category.findOneBy({
                     id,
                 });
-                // console.log(id);
                 const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
                     .where("menu.categoryId = :id", { id })
                     .leftJoin("menu.category", "category");
                 const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
                 const result = Object.assign({ category }, data);
                 return result;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching products by category");
+            }
+        });
+    }
+    FeatchMenuesBySubCategory(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("hello");
+                const id = parseInt(req.params.id);
+                const category = yield SubCategory_1.SubCategory.findOneBy({
+                    id,
+                });
+                console.log(category);
+                const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
+                    .where("menu.subCategoryId = :id", { id })
+                    .leftJoin("menu.subCategory", "subCategory");
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -140,6 +158,31 @@ class MenuService {
                             },
                         },
                         take: 6,
+                    });
+                    return Object.assign(Object.assign({}, item), { menues: menu }); // Assuming you want to return the item with menus attached
+                }));
+                const data = yield Promise.all(dataPromises); // Wait for all promises to resolve
+                return data;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching products by category");
+            }
+        });
+    }
+    MenuesBySubCategory() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const mealtimes = yield SubCategory_1.SubCategory.find({});
+                const dataPromises = mealtimes.map((item) => __awaiter(this, void 0, void 0, function* () {
+                    let menu = yield Menu_1.Menu.find({
+                        where: {
+                            subCategory: {
+                                id: item.id,
+                            },
+                        },
+                        take: 25,
                     });
                     return Object.assign(Object.assign({}, item), { menues: menu }); // Assuming you want to return the item with menus attached
                 }));

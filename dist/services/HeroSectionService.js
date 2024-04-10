@@ -39,6 +39,20 @@ class HeroSectionService {
             }
         });
     }
+    getAllHeroSection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const hero = yield Hero_1.Hero.find({});
+                // console.log(hero);
+                return hero;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
     AdmingetAll() {
         return __awaiter(this, void 0, void 0, function* () {
             try {

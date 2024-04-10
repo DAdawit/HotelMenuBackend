@@ -70,6 +70,16 @@ ProductController.menuesByMealTime = (req, res) => {
         res.json(err);
     });
 };
+ProductController.menuesBySubCategory = (req, res) => {
+    service
+        .MenuesBySubCategory()
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
 ProductController.fetchMenuesByCategory = (req, res) => {
     service
         .FeatchMenuesByCategory(req)
@@ -80,9 +90,19 @@ ProductController.fetchMenuesByCategory = (req, res) => {
         res.json(err);
     });
 };
+ProductController.featchMenuesBySubCategory = (req, res) => {
+    service
+        .FeatchMenuesBySubCategory(req)
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
 ProductController.featchMenuBySubCategory = (req, res) => {
     service
-        .FeatchMenuBySubCategory(req)
+        .FeatchMenuesBySubCategory(req)
         .then((menus) => {
         res.send(menus);
     })

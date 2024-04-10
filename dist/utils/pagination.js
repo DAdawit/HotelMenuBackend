@@ -13,7 +13,7 @@ exports.Paginate = void 0;
 function Paginate(queryBuilder, req) {
     return __awaiter(this, void 0, void 0, function* () {
         const page = parseInt(req.query.page) || 1;
-        const perPage = parseInt(req.query.limit) || 2;
+        const perPage = parseInt(req.query.limit) || 10;
         const offset = (page - 1) * perPage;
         const [data, total] = yield queryBuilder
             .skip(offset)

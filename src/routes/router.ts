@@ -21,13 +21,14 @@ router.get("/users", UserController.getUsers);
 router.post("/users", UserController.addUser);
 router.put("/change-profile-pic/:id", UserController.updateProfilePic);
 router.get("/heros", HeroController.getHeroSection);
+router.get("/all-heros", HeroController.getAllHeroSection);
 router.get("/logos", LogoController.getLogos);
 router.get("/menus", MenuController.get);
 router.get("/menus", MealTimeController.getMealTimes);
 router.get("/menus/menusbyCategory", MenuController.menuesByCategory);
 router.get("/menus/mealtime/:id", MenuController.fetchMenuesByMealTime);
 router.get("/menus/category/:id", MenuController.fetchMenuesByCategory);
-router.get("/menu/subCategory/:id", MenuController.featchMenuBySubCategory);
+router.get("/menus/subCategory/:id", MenuController.featchMenuBySubCategory);
 router.get("/menus/special-foods", MenuController.fetchSpecialFoodsMenus);
 router.get(
   "/menus/all-special-foods",
@@ -38,8 +39,10 @@ router.get("/menus/all-main-dishes", MenuController.fetchAllMainDishes);
 router.get("/mealTime/:id", MealTimeController.getDetails);
 router.get("/categories/:id", CategoryController.getCategoryById);
 router.get("/category/:id", CategoryController.categoryById);
+router.get("/sub-category/:id", SubcategoryController.getDetail);
 
 router.get("/menus/mealtimes", MenuController.menuesByMealTime);
+router.get("/menus/subcategories", MenuController.menuesBySubCategory);
 
 router.get("/products/related/:id", MenuController.relatedProducts);
 router.get("/products/:id", MenuController.detail);

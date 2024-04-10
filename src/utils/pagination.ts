@@ -22,7 +22,7 @@ export async function Paginate<T extends ObjectLiteral>(
   currentPage: number;
 }> {
   const page: number = parseInt(req.query.page as string) || 1;
-  const perPage: number = parseInt(req.query.limit as string) || 2;
+  const perPage: number = parseInt(req.query.limit as string) || 10;
   const offset = (page - 1) * perPage;
 
   const [data, total] = await queryBuilder
