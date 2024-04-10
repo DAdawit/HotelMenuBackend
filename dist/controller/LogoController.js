@@ -35,6 +35,14 @@ LogoController.getLogos = (req, res) => {
     })
         .catch((err) => [res.send(err)]);
 };
+LogoController.AdmingetLogos = (req, res) => {
+    service
+        .admingetLogos(req)
+        .then((logos) => {
+        res.json(logos);
+    })
+        .catch((err) => [res.send(err)]);
+};
 LogoController.addLogo = (req, res) => {
     service
         .add(req)

@@ -44,7 +44,6 @@ class HeroSectionService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const hero = yield Hero_1.Hero.find({});
-                // console.log(hero);
                 return hero;
             }
             catch (error) {

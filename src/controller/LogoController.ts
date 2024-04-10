@@ -18,6 +18,14 @@ class LogoController {
       .catch((err) => [res.send(err)]);
   };
 
+  public static AdmingetLogos = (req: Request, res: Response) => {
+    service
+      .admingetLogos(req)
+      .then((logos) => {
+        res.json(logos);
+      })
+      .catch((err) => [res.send(err)]);
+  };
   public static getLogoById(req: Request, res: Response) {
     service
       .getById(req)

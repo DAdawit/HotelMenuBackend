@@ -5,6 +5,7 @@ import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Logo } from "../entities/Logo";
+import { Paginate } from "../utils/pagination";
 
 export class LogoService {
   async getAll(): Promise<Logo[] | null> {
@@ -13,6 +14,24 @@ export class LogoService {
       // console.log(logos);
 
       return logos;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
+
+  async admingetLogos(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = Logo.createQueryBuilder().orderBy(
+        "created_at",
+        "DESC"
+      );
+      const data = Paginate<Logo>(queryBuilder, req);
+
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error

@@ -66,7 +66,7 @@ authRoutes.post("/admin/heros", HeroController_1.default.addHeroSection);
 authRoutes.get("/admin/heros/:id", HeroController_1.default.getHeroSectionById);
 authRoutes.delete("/admin/heros/:id", HeroController_1.default.removeHeroSection);
 authRoutes.put("/admin/heros/:id", HeroController_1.default.updateHeroSection);
-authRoutes.get("/admin/logos", LogoController_1.default.getLogos);
+authRoutes.get("/admin/logos", LogoController_1.default.AdmingetLogos);
 authRoutes.post("/admin/logos", LogoController_1.default.addLogo);
 authRoutes.get("/admin/logos/:id", LogoController_1.default.getLogoById);
 authRoutes.delete("/admin/logos/:id", LogoController_1.default.removeLogo);
