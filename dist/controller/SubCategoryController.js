@@ -25,6 +25,16 @@ SubcategoryController.getAll = (req, res) => {
         res.send(err);
     });
 };
+SubcategoryController.AdmingetSubCategories = (req, res) => {
+    service
+        .AdmingetSubCategories(req)
+        .then((subcategories) => {
+        res.send(subcategories);
+    })
+        .catch((err) => {
+        res.send(err);
+    });
+};
 SubcategoryController.getDetail = (req, res) => {
     service
         .detail(req.params.id)

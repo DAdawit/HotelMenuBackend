@@ -83,6 +83,7 @@ authRoutes.get("/admin/logos/:id", LogoController.getLogoById);
 authRoutes.delete("/admin/logos/:id", LogoController.removeLogo);
 authRoutes.put("/admin/logos/:id", LogoController.updateLogo);
 
+authRoutes.get("/admin/allCategories", CategoryController.getCategories);
 authRoutes.get("/admin/categories", CategoryController.AdmingetCategories);
 authRoutes.get(
   "/admin/categories-with-subcategories",
@@ -93,7 +94,12 @@ authRoutes.get("/admin/categories/:id", CategoryController.getCategoryById);
 authRoutes.delete("/admin/categories/:id", CategoryController.removeCategory);
 authRoutes.put("/admin/categories/:id", CategoryController.updateCategory);
 
-authRoutes.get("/admin/sub-categories", SubcategoryController.getAll);
+authRoutes.get("/admin/all-sub-categories", SubcategoryController.getAll);
+authRoutes.get(
+  "/admin/sub-categories",
+  SubcategoryController.AdmingetSubCategories
+);
+
 authRoutes.post("/admin/sub-categories", SubcategoryController.addSubCategory);
 authRoutes.get("/admin/sub-categories/:id", SubcategoryController.getDetail);
 

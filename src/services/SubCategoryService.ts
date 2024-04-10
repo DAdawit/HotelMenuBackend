@@ -3,6 +3,7 @@ import { SubCategoryCreateI } from "../Types";
 import { SubCategory } from "../entities/SubCategory";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
+import { Paginate } from "../utils/pagination";
 
 export class SubCategoryService {
   async index(): Promise<SubCategory[] | null> {
@@ -11,6 +12,23 @@ export class SubCategoryService {
         relations: { category: true },
       });
       return subCategories;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching subCategories"
+      );
+    }
+  }
+
+  async AdmingetSubCategories(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = SubCategory.createQueryBuilder("subcategory")
+        .leftJoinAndSelect("subcategory.category", "category")
+        .orderBy("subcategory.created_at", "DESC");
+
+      const data = Paginate<SubCategory>(queryBuilder, req);
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error
