@@ -231,6 +231,23 @@ export class MenuService {
       );
     }
   }
+  async searchMenus(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = Menu.createQueryBuilder("menu").where(
+        "menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search",
+        { search: `%${req.query.search}%` }
+      );
+      const data = await Paginate<Menu>(queryBuilder, req);
+
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching menus by category name"
+      );
+    }
+  }
   async FetchMainDishes(): Promise<Menu[] | null> {
     try {
       const menues = await Menu.find({ where: { mainDishes: true }, take: 5 });
@@ -308,8 +325,6 @@ export class MenuService {
 
   async add(req: Request): Promise<Menu | null> {
     try {
-      // console.log(req.body.availableMealLTimesIds);
-
       const availableMealTimes = await AvailableMealTime.findByIds(
         req.body.available_meal_times
       );
@@ -317,11 +332,11 @@ export class MenuService {
       console.log(req.body);
 
       const menu = new Menu();
-      menu.name = req.body.name;
-      menu.description = req.body.description;
+      menu.name = req.body.name.toLowerCase();
+      menu.description = req.body.description.toLowerCase();
       menu.price = req.body.price;
       menu.special = req.body.special;
-      menu.ingridiants = req.body.ingredients;
+      menu.ingridiants = req.body.ingredients.toLowerCase();
       menu.avaliable_all_day = req.body.avaliable_all_day;
       menu.mainDishes = req.body.mainDishes;
       menu.category = parseInt(req.body.categoryId) as any;
@@ -361,11 +376,11 @@ export class MenuService {
     }
     // console.log(req.body);
 
-    menu.name = req?.body.name;
-    menu.description = req.body.description;
+    menu.name = req?.body.name.toLowerCase();
+    menu.description = req.body.description.toLowerCase();
     menu.price = req.body.price;
     menu.special = req.body.special;
-    menu.ingridiants = req.body.ingredients;
+    menu.ingridiants = req.body.ingredients.toLowerCase();
     menu.avaliable_all_day = req.body.avaliable_all_day;
     menu.mainDishes = req.body.mainDishes;
     menu.category = parseInt(req.body.categoryId) as any;

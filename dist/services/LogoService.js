@@ -64,7 +64,7 @@ class LogoService {
                 // Use the utility function to handle file upload
                 const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "logos");
                 const logo = new Logo_1.Logo();
-                logo.name = req.body.name;
+                logo.name = req.body.name.toLowerCase();
                 logo.image = imagePath || "";
                 try {
                     yield logo.save();
@@ -99,7 +99,7 @@ class LogoService {
                 yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
             }
             if (logo !== null) {
-                logo.name = req.body.name;
+                logo.name = req.body.name.toLowerCase();
                 logo.image = imagePath !== null && imagePath !== void 0 ? imagePath : logo.image;
             }
             yield (logo === null || logo === void 0 ? void 0 : logo.save());

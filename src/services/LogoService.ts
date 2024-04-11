@@ -62,7 +62,7 @@ export class LogoService {
       const imagePath = await uploadFile(req, "logos");
 
       const logo = new Logo();
-      logo.name = req.body.name;
+      logo.name = req.body.name.toLowerCase();
       logo.image = imagePath || "";
 
       try {
@@ -100,7 +100,7 @@ export class LogoService {
     }
 
     if (logo !== null) {
-      logo.name = req.body.name;
+      logo.name = req.body.name.toLowerCase();
       logo.image = imagePath ?? logo.image;
     }
     await logo?.save();

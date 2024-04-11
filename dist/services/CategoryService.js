@@ -98,7 +98,7 @@ class CategoryService {
                 // Use the utility function to handle file upload
                 const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "category");
                 const category = new Category_1.Category();
-                category.name = req.body.name;
+                category.name = req.body.name.toLowerCase();
                 category.image = imagePath || "";
                 try {
                     yield category.save();
@@ -134,7 +134,7 @@ class CategoryService {
                 yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
             }
             if (category !== null) {
-                category.name = req.body.name;
+                category.name = req.body.name.toLowerCase();
                 category.image = imagePath !== null && imagePath !== void 0 ? imagePath : category.image;
             }
             yield (category === null || category === void 0 ? void 0 : category.save());

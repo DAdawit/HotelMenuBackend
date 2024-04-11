@@ -20,12 +20,10 @@ export class MealTimeService {
 
   async AddMealTime(req: Request): Promise<AvailableMealTime> {
     try {
-      console.log("hello mother fucker");
-
       const imagePath = await uploadFile(req, "mealtime");
 
       const mealTime = new AvailableMealTime();
-      mealTime.name = req.body.name;
+      mealTime.name = req.body.name.toLowerCase();
       mealTime.image = imagePath || "";
 
       console.log(mealTime);
@@ -81,7 +79,7 @@ export class MealTimeService {
       }
 
       if (mealTime !== null) {
-        mealTime.name = req.body.name;
+        mealTime.name = req.body.name.toLowerCase();
         mealTime.image = imagePath ?? mealTime.image;
       }
       await mealTime?.save();

@@ -92,7 +92,7 @@ export class CategoryService {
       const imagePath = await uploadFile(req, "category");
 
       const category = new Category();
-      category.name = req.body.name;
+      category.name = req.body.name.toLowerCase();
       category.image = imagePath || "";
 
       try {
@@ -131,7 +131,7 @@ export class CategoryService {
     }
 
     if (category !== null) {
-      category.name = req.body.name;
+      category.name = req.body.name.toLowerCase();
       category.image = imagePath ?? category.image;
     }
     await category?.save();

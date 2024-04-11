@@ -230,6 +230,20 @@ class MenuService {
             }
         });
     }
+    searchMenus(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = Menu_1.Menu.createQueryBuilder("menu").where("menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search", { search: `%${req.query.search}%` });
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching menus by category name");
+            }
+        });
+    }
     FetchMainDishes() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -305,15 +319,14 @@ class MenuService {
     add(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log(req.body.availableMealLTimesIds);
                 const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
                 console.log(req.body);
                 const menu = new Menu_1.Menu();
-                menu.name = req.body.name;
-                menu.description = req.body.description;
+                menu.name = req.body.name.toLowerCase();
+                menu.description = req.body.description.toLowerCase();
                 menu.price = req.body.price;
                 menu.special = req.body.special;
-                menu.ingridiants = req.body.ingredients;
+                menu.ingridiants = req.body.ingredients.toLowerCase();
                 menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.mainDishes = req.body.mainDishes;
                 menu.category = parseInt(req.body.categoryId);
@@ -348,11 +361,11 @@ class MenuService {
                 return null;
             }
             // console.log(req.body);
-            menu.name = req === null || req === void 0 ? void 0 : req.body.name;
-            menu.description = req.body.description;
+            menu.name = req === null || req === void 0 ? void 0 : req.body.name.toLowerCase();
+            menu.description = req.body.description.toLowerCase();
             menu.price = req.body.price;
             menu.special = req.body.special;
-            menu.ingridiants = req.body.ingredients;
+            menu.ingridiants = req.body.ingredients.toLowerCase();
             menu.avaliable_all_day = req.body.avaliable_all_day;
             menu.mainDishes = req.body.mainDishes;
             menu.category = parseInt(req.body.categoryId);

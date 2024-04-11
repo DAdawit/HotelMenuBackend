@@ -120,6 +120,16 @@ ProductController.fetchSpecialFoodsMenus = (req, res) => {
         res.json(err);
     });
 };
+ProductController.SearchMenus = (req, res) => {
+    service
+        .searchMenus(req)
+        .then((menus) => {
+        res.send(menus);
+    })
+        .catch((err) => {
+        res.json(err);
+    });
+};
 ProductController.fetchAllSpecialFoodsMenus = (req, res) => {
     service
         .FetchAllSpecialFoodsMenus(req)
