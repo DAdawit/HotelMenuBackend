@@ -248,6 +248,27 @@ export class MenuService {
       );
     }
   }
+  async AdminMenuSearch(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = Menu.createQueryBuilder("menu")
+        .where(
+          "menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search",
+          { search: `%${req.query.search}%` }
+        )
+        .leftJoinAndSelect("menu.category", "category")
+        .leftJoinAndSelect("menu.subCategory", "subCategory")
+        .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
+        .orderBy("menu.created_at", "DESC");
+      const data = await Paginate<Menu>(queryBuilder, req);
+      return data;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred on fetching menus by category name"
+      );
+    }
+  }
   async FetchMainDishes(): Promise<Menu[] | null> {
     try {
       const menues = await Menu.find({ where: { mainDishes: true }, take: 5 });
@@ -374,8 +395,6 @@ export class MenuService {
     if (!menu) {
       return null;
     }
-    // console.log(req.body);
-
     menu.name = req?.body.name.toLowerCase();
     menu.description = req.body.description.toLowerCase();
     menu.price = req.body.price;

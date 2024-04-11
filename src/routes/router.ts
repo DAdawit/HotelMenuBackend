@@ -30,7 +30,7 @@ router.get("/menus/mealtime/:id", MenuController.fetchMenuesByMealTime);
 router.get("/menus/category/:id", MenuController.fetchMenuesByCategory);
 router.get("/menus/subCategory/:id", MenuController.featchMenuBySubCategory);
 router.get("/menus/special-foods", MenuController.fetchSpecialFoodsMenus);
-router.get("/search", MenuController.SearchMenus)
+router.get("/search", MenuController.SearchMenus);
 router.get(
   "/menus/all-special-foods",
   MenuController.fetchAllSpecialFoodsMenus
@@ -69,6 +69,7 @@ authRoutes.post("/admin/add-menu", MenuController.add);
 authRoutes.get("/admin/menus/:id", MenuController.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
 authRoutes.put("/admin/menu/:id", MenuController.updateMenu);
+authRoutes.get("/admin/menuSearch", MenuController.adminMenuSearch);
 
 authRoutes.put("/admin/order/:id/change-status", OrderController.changeStatus);
 

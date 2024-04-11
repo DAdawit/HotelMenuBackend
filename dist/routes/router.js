@@ -61,6 +61,7 @@ authRoutes.post("/admin/add-menu", MenuController_1.default.add);
 authRoutes.get("/admin/menus/:id", MenuController_1.default.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController_1.default.addOrChangeMenuImage);
 authRoutes.put("/admin/menu/:id", MenuController_1.default.updateMenu);
+authRoutes.get("/admin/menuSearch", MenuController_1.default.adminMenuSearch);
 authRoutes.put("/admin/order/:id/change-status", OrderController_1.default.changeStatus);
 authRoutes.get("/admin/heros", HeroController_1.default.AdminHeroSection);
 authRoutes.post("/admin/heros", HeroController_1.default.addHeroSection);

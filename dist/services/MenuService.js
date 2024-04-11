@@ -244,6 +244,25 @@ class MenuService {
             }
         });
     }
+    AdminMenuSearch(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
+                    .where("menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search", { search: `%${req.query.search}%` })
+                    .leftJoinAndSelect("menu.category", "category")
+                    .leftJoinAndSelect("menu.subCategory", "subCategory")
+                    .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
+                    .orderBy("menu.created_at", "DESC");
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching menus by category name");
+            }
+        });
+    }
     FetchMainDishes() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -360,7 +379,6 @@ class MenuService {
             if (!menu) {
                 return null;
             }
-            // console.log(req.body);
             menu.name = req === null || req === void 0 ? void 0 : req.body.name.toLowerCase();
             menu.description = req.body.description.toLowerCase();
             menu.price = req.body.price;
