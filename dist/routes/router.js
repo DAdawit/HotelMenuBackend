@@ -35,6 +35,7 @@ router.get("/menus/category/:id", MenuController_1.default.fetchMenuesByCategory
 router.get("/menus/subCategory/:id", MenuController_1.default.featchMenuBySubCategory);
 router.get("/menus/special-foods", MenuController_1.default.fetchSpecialFoodsMenus);
 router.get("/search", MenuController_1.default.SearchMenus);
+router.get("/menu/special-foods", MenuController_1.default.fetchSpecialFoodsMenus);
 router.get("/menus/all-special-foods", MenuController_1.default.fetchAllSpecialFoodsMenus);
 router.get("/menus/main-dishes", MenuController_1.default.fetchMainDishes);
 router.get("/menus/all-main-dishes", MenuController_1.default.fetchAllMainDishes);
