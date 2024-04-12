@@ -25,6 +25,15 @@ let Menu = class Menu extends typeorm_1.BaseEntity {
         const baseUrl = (0, host_1.getBaseUrl)();
         this._imageUrl = baseUrl + this.image; // Construct the full image path after entity load
     }
+    convertNameToLowercase() {
+        this.name = this.name.toLowerCase();
+        if (this.description) {
+            this.description = this.description.toLowerCase();
+        }
+        if (this.ingridiants) {
+            this.ingridiants = this.ingridiants.toLowerCase();
+        }
+    }
 };
 exports.Menu = Menu;
 __decorate([
@@ -121,6 +130,13 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Menu.prototype, "updated_at", void 0);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    (0, typeorm_1.BeforeUpdate)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], Menu.prototype, "convertNameToLowercase", null);
 exports.Menu = Menu = __decorate([
     (0, typeorm_1.Entity)("menues")
 ], Menu);

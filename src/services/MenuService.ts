@@ -2,7 +2,7 @@ import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Color } from "../entities/Color";
-import { Equal, Not, getRepository } from "typeorm";
+import { Equal, In, Not, getRepository } from "typeorm";
 import { Paginate } from "../utils/pagination";
 import { Menu } from "../entities/Menu";
 import { AvailableMealTime } from "../entities/AvaliableMealTime";
@@ -349,22 +349,20 @@ export class MenuService {
       const availableMealTimes = await AvailableMealTime.findByIds(
         req.body.available_meal_times
       );
-
+      const subCategoryId = parseInt(req.body.subCategoryId);
       console.log(req.body);
 
       const menu = new Menu();
-      menu.name = req.body.name.toLowerCase();
-      menu.description = req.body.description.toLowerCase();
+      menu.name = req.body.name;
+      menu.description = req.body.description;
       menu.price = req.body.price;
       menu.special = req.body.special;
-      menu.ingridiants = req.body.ingredients.toLowerCase();
+      menu.ingridiants = req.body.ingredients;
       menu.avaliable_all_day = req.body.avaliable_all_day;
       menu.mainDishes = req.body.mainDishes;
       menu.category = parseInt(req.body.categoryId) as any;
-      menu.subCategory =
-        parseInt(req.body.subCategoryId) !== 0
-          ? (parseInt(req.body.subCategoryId) as any)
-          : null;
+      menu.subCategory = subCategoryId ? (subCategoryId as any) : null;
+
       menu.available_meal_times = availableMealTimes;
       // console.log(menu);
 
@@ -372,10 +370,9 @@ export class MenuService {
         await menu.save();
       } catch (error) {
         console.log(error);
+        throw error;
       }
       menu.loadImagePath();
-      // console.log(menu);
-
       return menu;
     } catch (error) {
       throw new Error(
@@ -389,26 +386,30 @@ export class MenuService {
   async update(req: Request): Promise<Menu | null> {
     const menu = await Menu.findOneBy({ id: parseInt(req.params.id) });
 
-    const availableMealTimes = await AvailableMealTime.findByIds(
-      req.body.available_meal_times
-    );
+    const availableMealTimes = await AvailableMealTime.find({
+      where: {
+        id: In(req.body.available_meal_times),
+      },
+    });
+    console.log(req.body);
+
     if (!menu) {
       return null;
     }
-    menu.name = req?.body.name.toLowerCase();
-    menu.description = req.body.description.toLowerCase();
+    const subCategoryId = parseInt(req.body.subCategoryId);
+    console.log(subCategoryId);
+
+    menu.name = req?.body.name;
+    menu.description = req.body.description;
     menu.price = req.body.price;
     menu.special = req.body.special;
-    menu.ingridiants = req.body.ingredients.toLowerCase();
+    menu.ingridiants = req.body.ingredients;
     menu.avaliable_all_day = req.body.avaliable_all_day;
     menu.mainDishes = req.body.mainDishes;
     menu.category = parseInt(req.body.categoryId) as any;
-    menu.subCategory =
-      parseInt(req.body.subCategoryId) !== 0
-        ? (parseInt(req.body.subCategoryId) as any)
-        : null;
+    menu.subCategory = subCategoryId ? (subCategoryId as any) : null;
     menu.available_meal_times = availableMealTimes;
-    console.log(menu);
+    // console.log(menu);
 
     try {
       await menu.save();
@@ -416,7 +417,7 @@ export class MenuService {
       console.log(error);
     }
     menu.loadImagePath();
-    console.log(menu);
+    // console.log(menu);
 
     return menu;
   }
@@ -484,6 +485,8 @@ export class MenuService {
     try {
       imagePath = await uploadFile(req, "menues");
     } catch (error) {
+      console.log(error);
+
       imagePath = null;
     }
     const imageTodelete = `public/${menu?.image}`;
@@ -495,7 +498,7 @@ export class MenuService {
     }
 
     if (menu !== null) {
-      menu.image = imagePath ? imagePath : "";
+      menu.image = imagePath ?? "";
     }
     await menu?.save();
     menu?.loadImagePath();

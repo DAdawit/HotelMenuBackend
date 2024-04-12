@@ -339,20 +339,18 @@ class MenuService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
+                const subCategoryId = parseInt(req.body.subCategoryId);
                 console.log(req.body);
                 const menu = new Menu_1.Menu();
-                menu.name = req.body.name.toLowerCase();
-                menu.description = req.body.description.toLowerCase();
+                menu.name = req.body.name;
+                menu.description = req.body.description;
                 menu.price = req.body.price;
                 menu.special = req.body.special;
-                menu.ingridiants = req.body.ingredients.toLowerCase();
+                menu.ingridiants = req.body.ingredients;
                 menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.mainDishes = req.body.mainDishes;
                 menu.category = parseInt(req.body.categoryId);
-                menu.subCategory =
-                    parseInt(req.body.subCategoryId) !== 0
-                        ? parseInt(req.body.subCategoryId)
-                        : null;
+                menu.subCategory = subCategoryId ? subCategoryId : null;
                 menu.available_meal_times = availableMealTimes;
                 // console.log(menu);
                 try {
@@ -360,9 +358,9 @@ class MenuService {
                 }
                 catch (error) {
                     console.log(error);
+                    throw error;
                 }
                 menu.loadImagePath();
-                // console.log(menu);
                 return menu;
             }
             catch (error) {
@@ -375,24 +373,28 @@ class MenuService {
     update(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const menu = yield Menu_1.Menu.findOneBy({ id: parseInt(req.params.id) });
-            const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
+            const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.find({
+                where: {
+                    id: (0, typeorm_1.In)(req.body.available_meal_times),
+                },
+            });
+            console.log(req.body);
             if (!menu) {
                 return null;
             }
-            menu.name = req === null || req === void 0 ? void 0 : req.body.name.toLowerCase();
-            menu.description = req.body.description.toLowerCase();
+            const subCategoryId = parseInt(req.body.subCategoryId);
+            console.log(subCategoryId);
+            menu.name = req === null || req === void 0 ? void 0 : req.body.name;
+            menu.description = req.body.description;
             menu.price = req.body.price;
             menu.special = req.body.special;
-            menu.ingridiants = req.body.ingredients.toLowerCase();
+            menu.ingridiants = req.body.ingredients;
             menu.avaliable_all_day = req.body.avaliable_all_day;
             menu.mainDishes = req.body.mainDishes;
             menu.category = parseInt(req.body.categoryId);
-            menu.subCategory =
-                parseInt(req.body.subCategoryId) !== 0
-                    ? parseInt(req.body.subCategoryId)
-                    : null;
+            menu.subCategory = subCategoryId ? subCategoryId : null;
             menu.available_meal_times = availableMealTimes;
-            console.log(menu);
+            // console.log(menu);
             try {
                 yield menu.save();
             }
@@ -400,7 +402,7 @@ class MenuService {
                 console.log(error);
             }
             menu.loadImagePath();
-            console.log(menu);
+            // console.log(menu);
             return menu;
         });
     }
@@ -465,6 +467,7 @@ class MenuService {
                 imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
             }
             catch (error) {
+                console.log(error);
                 imagePath = null;
             }
             const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
@@ -474,7 +477,7 @@ class MenuService {
                 }
             }
             if (menu !== null) {
-                menu.image = imagePath ? imagePath : "";
+                menu.image = imagePath !== null && imagePath !== void 0 ? imagePath : "";
             }
             yield (menu === null || menu === void 0 ? void 0 : menu.save());
             menu === null || menu === void 0 ? void 0 : menu.loadImagePath();

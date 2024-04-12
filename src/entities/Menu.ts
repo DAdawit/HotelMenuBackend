@@ -1,6 +1,8 @@
 import {
   AfterLoad,
   BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -113,4 +115,16 @@ export class Menu extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at!: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  convertNameToLowercase(): void {
+    this.name = this.name.toLowerCase();
+      if (this.description) {
+        this.description = this.description.toLowerCase();
+      }
+      if (this.ingridiants) {
+        this.ingridiants = this.ingridiants.toLowerCase();
+      }
+  }
 }

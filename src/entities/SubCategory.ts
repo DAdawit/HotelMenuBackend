@@ -1,6 +1,8 @@
 import {
   AfterLoad,
   BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -47,4 +49,10 @@ export class SubCategory extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at!: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  convertNameToLowercase(): void {
+    this.name = this.name.toLowerCase();
+  }
 }
