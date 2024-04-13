@@ -340,7 +340,7 @@ class MenuService {
             try {
                 const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
                 const subCategoryId = parseInt(req.body.subCategoryId);
-                console.log(req.body);
+                // console.log(req.body);
                 const menu = new Menu_1.Menu();
                 menu.name = req.body.name;
                 menu.description = req.body.description;

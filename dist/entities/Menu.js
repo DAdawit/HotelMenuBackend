@@ -62,7 +62,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Menu.prototype, "special", void 0);
 __decorate([
-    (0, typeorm_1.Column)({}),
+    (0, typeorm_1.Column)({ default: false }),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], Menu.prototype, "mainDishes", void 0);

@@ -13,6 +13,7 @@ import AdminController from "../controller/AdminController";
 import MealTimeController from "../controller/MealTimeController";
 import HeroController from "../controller/HeroController";
 import LogoController from "../controller/LogoController";
+import ReportsController from "../controller/ReportsController";
 const router = Router();
 
 // Routes that do not require authentication
@@ -157,6 +158,17 @@ authRoutes.post("/report-menu/:id", ReportProductController.addReportedMenu);
 
 // will be done for admin only
 authRoutes.put("/report-menu/:id", ReportProductController.updateReview);
+
+authRoutes.get(
+  "/admin/states/menuByCategory",
+  ReportsController.menusByCategory
+);
+authRoutes.get(
+  "/admin/states/menuBysubCategory",
+  ReportsController.menusBySubCategory
+);
+authRoutes.get("/admin/states/mealtime", ReportsController.menusBymealtime);
+authRoutes.get("/admin/states", ReportsController.index);
 
 // Adimin routes
 

@@ -190,6 +190,19 @@ class ProductController {
         res.status(201).send(menu);
       })
       .catch((err) => {
+        if (err instanceof Error) {
+          // Here you can add more specific error handling based on the error message or type
+          // For example, if you have a custom NotFoundError for items not found in the database
+          // if (err instanceof NotFoundError) {
+          //   return res.status(404).json({ message: err.message });
+          // }
+
+          // For this example, we'll assume any error caught here is a server error
+          res.status(500).json({ message: err.message });
+        } else {
+          // If the error is not an instance of Error, it's an unexpected condition
+          res.status(500).json({ message: "An unexpected error occurred" });
+        }
         res.send(err);
       });
   };

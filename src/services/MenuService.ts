@@ -350,7 +350,7 @@ export class MenuService {
         req.body.available_meal_times
       );
       const subCategoryId = parseInt(req.body.subCategoryId);
-      console.log(req.body);
+      // console.log(req.body);
 
       const menu = new Menu();
       menu.name = req.body.name;

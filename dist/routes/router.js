@@ -18,6 +18,7 @@ const AdminController_1 = __importDefault(require("../controller/AdminController
 const MealTimeController_1 = __importDefault(require("../controller/MealTimeController"));
 const HeroController_1 = __importDefault(require("../controller/HeroController"));
 const LogoController_1 = __importDefault(require("../controller/LogoController"));
+const ReportsController_1 = __importDefault(require("../controller/ReportsController"));
 const router = (0, express_1.Router)();
 // Routes that do not require authentication
 router.post("/login", UserController_1.default.LoginUser);
@@ -122,6 +123,10 @@ authRoutes.get("/reported-menues", ReportProductController_1.default.getReported
 authRoutes.post("/report-menu/:id", ReportProductController_1.default.addReportedMenu);
 // will be done for admin only
 authRoutes.put("/report-menu/:id", ReportProductController_1.default.updateReview);
+authRoutes.get("/admin/states/menuByCategory", ReportsController_1.default.menusByCategory);
+authRoutes.get("/admin/states/menuBysubCategory", ReportsController_1.default.menusBySubCategory);
+authRoutes.get("/admin/states/mealtime", ReportsController_1.default.menusBymealtime);
+authRoutes.get("/admin/states", ReportsController_1.default.index);
 // Adimin routes
 router.use(authRoutes);
 exports.default = router;

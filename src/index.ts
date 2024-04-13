@@ -1,7 +1,7 @@
-import express, { Router } from "express";
-import { createConnection } from "typeorm";
+import express from "express";
 import router from "./routes/router";
 import cors from "cors";
+import { AppDataSource } from "./config";
 
 const app = express();
 const port: number = 4000;
@@ -10,16 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const startServer = async () => {
   try {
-    await createConnection({
-      type: "postgres",
-      host: "localhost",
-      port: 5432,
-      username: "postgres",
-      password: "root",
-      database: "hotelMenu",
-      synchronize: true,
-      entities: [__dirname + "/entities/*{.js,.ts}"],
-    });
+    await AppDataSource.initialize(); // Initialize your DataSource
     console.log("db connected successfully !");
   } catch (error) {
     throw new Error("unable to connect to db");

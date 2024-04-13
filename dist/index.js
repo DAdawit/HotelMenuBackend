@@ -13,25 +13,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const typeorm_1 = require("typeorm");
 const router_1 = __importDefault(require("./routes/router"));
 const cors_1 = __importDefault(require("cors"));
+const config_1 = require("./config");
 const app = (0, express_1.default)();
 const port = 4000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, typeorm_1.createConnection)({
-            type: "postgres",
-            host: "localhost",
-            port: 5432,
-            username: "postgres",
-            password: "root",
-            database: "hotelMenu",
-            synchronize: true,
-            entities: [__dirname + "/entities/*{.js,.ts}"],
-        });
+        yield config_1.AppDataSource.initialize(); // Initialize your DataSource
         console.log("db connected successfully !");
     }
     catch (error) {
