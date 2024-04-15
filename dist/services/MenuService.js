@@ -19,6 +19,8 @@ const Menu_1 = require("../entities/Menu");
 const AvaliableMealTime_1 = require("../entities/AvaliableMealTime");
 const Category_1 = require("../entities/Category");
 const SubCategory_1 = require("../entities/SubCategory");
+const config_1 = require("../config");
+const searchCache = new Map();
 class MenuService {
     get2(req) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -148,7 +150,7 @@ class MenuService {
                                 id: item.id,
                             },
                         },
-                        take: 6,
+                        take: 14,
                     });
                     return Object.assign(Object.assign({}, item), { menues: menu }); // Assuming you want to return the item with menus attached
                 }));
@@ -215,7 +217,8 @@ class MenuService {
     FetchSpecialFoodsMenus() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const menues = yield (0, typeorm_1.getRepository)(Menu_1.Menu)
+                const menues = yield config_1.AppDataSource.manager
+                    .getRepository(Menu_1.Menu)
                     .createQueryBuilder("menu")
                     .leftJoinAndSelect("menu.category", "category")
                     .where("category.name ILike :name", { name: `%food%` })
@@ -233,8 +236,13 @@ class MenuService {
     searchMenus(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const searchTerm = req.query.search;
+                if (searchCache === null || searchCache === void 0 ? void 0 : searchCache.has(searchTerm)) {
+                    return searchCache.get(searchTerm);
+                }
                 const queryBuilder = Menu_1.Menu.createQueryBuilder("menu").where("menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search", { search: `%${req.query.search}%` });
                 const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                searchCache.set(searchTerm, data);
                 return data;
             }
             catch (error) {

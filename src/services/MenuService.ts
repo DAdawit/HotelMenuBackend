@@ -8,6 +8,9 @@ import { Menu } from "../entities/Menu";
 import { AvailableMealTime } from "../entities/AvaliableMealTime";
 import { Category } from "../entities/Category";
 import { SubCategory } from "../entities/SubCategory";
+import { DataSource } from "typeorm";
+import { AppDataSource } from "../config";
+const searchCache = new Map<string, any>();
 export class MenuService {
   async get2(req: Request): Promise<any | null> {
     try {
@@ -145,7 +148,7 @@ export class MenuService {
               id: item.id,
             },
           },
-          take: 6,
+          take: 14,
         });
         return { ...item, menues: menu }; // Assuming you want to return the item with menus attached
       });
@@ -215,7 +218,8 @@ export class MenuService {
 
   async FetchSpecialFoodsMenus(): Promise<Menu[] | null> {
     try {
-      const menues = await getRepository(Menu)
+      const menues = await AppDataSource.manager
+        .getRepository(Menu)
         .createQueryBuilder("menu")
         .leftJoinAndSelect("menu.category", "category")
         .where("category.name ILike :name", { name: `%food%` })
@@ -233,12 +237,16 @@ export class MenuService {
   }
   async searchMenus(req: Request): Promise<any | null> {
     try {
+      const searchTerm = req.query.search as string;
+      if (searchCache?.has(searchTerm)) {
+        return searchCache.get(searchTerm);
+      }
       const queryBuilder = Menu.createQueryBuilder("menu").where(
         "menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search",
         { search: `%${req.query.search}%` }
       );
       const data = await Paginate<Menu>(queryBuilder, req);
-
+      searchCache.set(searchTerm, data);
       return data;
     } catch (error) {
       throw new Error(

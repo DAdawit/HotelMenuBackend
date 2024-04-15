@@ -19,6 +19,7 @@ const MealTimeController_1 = __importDefault(require("../controller/MealTimeCont
 const HeroController_1 = __importDefault(require("../controller/HeroController"));
 const LogoController_1 = __importDefault(require("../controller/LogoController"));
 const ReportsController_1 = __importDefault(require("../controller/ReportsController"));
+const ProfileController_1 = __importDefault(require("../controller/ProfileController"));
 const router = (0, express_1.Router)();
 // Routes that do not require authentication
 router.post("/login", UserController_1.default.LoginUser);
@@ -28,6 +29,7 @@ router.put("/change-profile-pic/:id", UserController_1.default.updateProfilePic)
 router.get("/heros", HeroController_1.default.getHeroSection);
 router.get("/all-heros", HeroController_1.default.getAllHeroSection);
 router.get("/logos", LogoController_1.default.getLogos);
+router.get("/profile", ProfileController_1.default.get);
 router.get("/menus", MenuController_1.default.get);
 router.get("/menus", MealTimeController_1.default.getMealTimes);
 router.get("/menus/menusbyCategory", MenuController_1.default.menuesByCategory);
@@ -128,5 +130,9 @@ authRoutes.get("/admin/states/menuBysubCategory", ReportsController_1.default.me
 authRoutes.get("/admin/states/mealtime", ReportsController_1.default.menusBymealtime);
 authRoutes.get("/admin/states", ReportsController_1.default.index);
 // Adimin routes
+authRoutes.get("/admin/profile", ProfileController_1.default.get);
+authRoutes.post("/admin/profile", ProfileController_1.default.addProfile);
+authRoutes.put("/admin/profile/:id", ProfileController_1.default.updateProfile);
+authRoutes.delete("/admin/profile/:id", ProfileController_1.default.get);
 router.use(authRoutes);
 exports.default = router;
