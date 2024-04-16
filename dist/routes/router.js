@@ -134,5 +134,6 @@ authRoutes.get("/admin/profile", ProfileController_1.default.get);
 authRoutes.post("/admin/profile", ProfileController_1.default.addProfile);
 authRoutes.put("/admin/profile/:id", ProfileController_1.default.updateProfile);
 authRoutes.delete("/admin/profile/:id", ProfileController_1.default.get);
+authRoutes.post("/admin/changePassword", UserController_1.default.ChangePassword);
 router.use(authRoutes);
 exports.default = router;

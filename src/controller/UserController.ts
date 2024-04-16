@@ -135,6 +135,24 @@ class UserController {
         res.send(err);
       });
   };
+  public static ChangePassword = async (req: Request, res: Response) => {
+    console.log(req.body);
+
+    const userId = getUserId(req);
+    const user = await User.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (user && bcrypt.compareSync(req.body.old_password, user.password)) {
+      user.password = bcrypt.hashSync(req.body.new_password, 8);
+      user.save();
+      return res.status(200).send("password changed successfully");
+    } else {
+      return res.status(401).json({ detail: "Old password is incorrect !" });
+    }
+  };
 }
 
 export default UserController;

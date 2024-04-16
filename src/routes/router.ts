@@ -177,6 +177,7 @@ authRoutes.get("/admin/profile", ProfileController.get);
 authRoutes.post("/admin/profile", ProfileController.addProfile);
 authRoutes.put("/admin/profile/:id", ProfileController.updateProfile);
 authRoutes.delete("/admin/profile/:id", ProfileController.get);
+authRoutes.post("/admin/changePassword", UserController.ChangePassword);
 
 router.use(authRoutes);
 
