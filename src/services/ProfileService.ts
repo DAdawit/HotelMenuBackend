@@ -67,7 +67,7 @@ export class ProfileService {
     profile.secondaryPhone = req.body.secondaryPhone;
 
     try {
-      await profile?.save();
+      await profile.save();
     } catch (error) {
       console.log(error);
     }

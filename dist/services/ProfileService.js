@@ -69,7 +69,7 @@ class ProfileService {
             profile.openTime = req.body.openTime;
             profile.secondaryPhone = req.body.secondaryPhone;
             try {
-                yield (profile === null || profile === void 0 ? void 0 : profile.save());
+                yield profile.save();
             }
             catch (error) {
                 console.log(error);
