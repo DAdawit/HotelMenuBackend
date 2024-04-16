@@ -18,6 +18,9 @@ const pagination_1 = require("../utils/pagination");
 const Menu_1 = require("../entities/Menu");
 const AvaliableMealTime_1 = require("../entities/AvaliableMealTime");
 const Category_1 = require("../entities/Category");
+const SubCategory_1 = require("../entities/SubCategory");
+const config_1 = require("../config");
+const searchCache = new Map();
 class MenuService {
     get2(req) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -25,9 +28,10 @@ class MenuService {
                 const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
                     .leftJoinAndSelect("menu.category", "category")
                     .leftJoinAndSelect("menu.subCategory", "subCategory")
-                    .leftJoinAndSelect("menu.available_meal_times", "available_meal_times")
-                    .orderBy("created_at", "DESC");
-                return (0, pagination_1.Paginate)(queryBuilder, req);
+                    .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
+                    .orderBy("menu.created_at", "DESC");
+                const data = (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -60,20 +64,6 @@ class MenuService {
             }
         });
     }
-    // async FeatchMenuesByCategory(req: Request): Promise<Menu[] | null> {
-    //   try {
-    //     const menues = await Menu.find({
-    //       where: { category: { id: parseInt(req.params.id) } },
-    //     });
-    //     return menues;
-    //   } catch (error) {
-    //     throw new Error(
-    //       error instanceof Error
-    //         ? error.message
-    //         : "An unknown error occurred on fetching products by category"
-    //     );
-    //   }
-    // }
     FeatchMenuesByCategory(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -81,13 +71,34 @@ class MenuService {
                 const category = yield Category_1.Category.findOneBy({
                     id,
                 });
-                // console.log(id);
                 const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
                     .where("menu.categoryId = :id", { id })
                     .leftJoin("menu.category", "category");
                 const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
                 const result = Object.assign({ category }, data);
                 return result;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching products by category");
+            }
+        });
+    }
+    FeatchMenuesBySubCategory(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("hello");
+                const id = parseInt(req.params.id);
+                const category = yield SubCategory_1.SubCategory.findOneBy({
+                    id,
+                });
+                console.log(category);
+                const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
+                    .where("menu.subCategoryId = :id", { id })
+                    .leftJoin("menu.subCategory", "subCategory");
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -139,7 +150,32 @@ class MenuService {
                                 id: item.id,
                             },
                         },
-                        take: 6,
+                        take: 14,
+                    });
+                    return Object.assign(Object.assign({}, item), { menues: menu }); // Assuming you want to return the item with menus attached
+                }));
+                const data = yield Promise.all(dataPromises); // Wait for all promises to resolve
+                return data;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching products by category");
+            }
+        });
+    }
+    MenuesBySubCategory() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const mealtimes = yield SubCategory_1.SubCategory.find({});
+                const dataPromises = mealtimes.map((item) => __awaiter(this, void 0, void 0, function* () {
+                    let menu = yield Menu_1.Menu.find({
+                        where: {
+                            subCategory: {
+                                id: item.id,
+                            },
+                        },
+                        take: 25,
                     });
                     return Object.assign(Object.assign({}, item), { menues: menu }); // Assuming you want to return the item with menus attached
                 }));
@@ -181,13 +217,52 @@ class MenuService {
     FetchSpecialFoodsMenus() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const menues = yield (0, typeorm_1.getRepository)(Menu_1.Menu)
+                const menues = yield config_1.AppDataSource.manager
+                    .getRepository(Menu_1.Menu)
                     .createQueryBuilder("menu")
                     .leftJoinAndSelect("menu.category", "category")
                     .where("category.name ILike :name", { name: `%food%` })
                     .take(15)
                     .getMany();
                 return menues;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching menus by category name");
+            }
+        });
+    }
+    searchMenus(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const searchTerm = req.query.search;
+                if (searchCache === null || searchCache === void 0 ? void 0 : searchCache.has(searchTerm)) {
+                    return searchCache.get(searchTerm);
+                }
+                const queryBuilder = Menu_1.Menu.createQueryBuilder("menu").where("menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search", { search: `%${req.query.search}%` });
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                searchCache.set(searchTerm, data);
+                return data;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred on fetching menus by category name");
+            }
+        });
+    }
+    AdminMenuSearch(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = Menu_1.Menu.createQueryBuilder("menu")
+                    .where("menu.name LIKE :search OR menu.description LIKE :search OR menu.ingridiants LIKE :search", { search: `%${req.query.search}%` })
+                    .leftJoinAndSelect("menu.category", "category")
+                    .leftJoinAndSelect("menu.subCategory", "subCategory")
+                    .innerJoinAndSelect("menu.available_meal_times", "available_meal_times")
+                    .orderBy("menu.created_at", "DESC");
+                const data = yield (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -271,9 +346,9 @@ class MenuService {
     add(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // console.log(req.body.availableMealLTimesIds);
                 const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
-                console.log(req.body);
+                const subCategoryId = parseInt(req.body.subCategoryId);
+                // console.log(req.body);
                 const menu = new Menu_1.Menu();
                 menu.name = req.body.name;
                 menu.description = req.body.description;
@@ -283,10 +358,7 @@ class MenuService {
                 menu.avaliable_all_day = req.body.avaliable_all_day;
                 menu.mainDishes = req.body.mainDishes;
                 menu.category = parseInt(req.body.categoryId);
-                menu.subCategory =
-                    parseInt(req.body.subCategoryId) !== 0
-                        ? parseInt(req.body.subCategoryId)
-                        : null;
+                menu.subCategory = subCategoryId ? subCategoryId : null;
                 menu.available_meal_times = availableMealTimes;
                 // console.log(menu);
                 try {
@@ -294,9 +366,9 @@ class MenuService {
                 }
                 catch (error) {
                     console.log(error);
+                    throw error;
                 }
                 menu.loadImagePath();
-                // console.log(menu);
                 return menu;
             }
             catch (error) {
@@ -309,11 +381,17 @@ class MenuService {
     update(req) {
         return __awaiter(this, void 0, void 0, function* () {
             const menu = yield Menu_1.Menu.findOneBy({ id: parseInt(req.params.id) });
-            const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.findByIds(req.body.available_meal_times);
+            const availableMealTimes = yield AvaliableMealTime_1.AvailableMealTime.find({
+                where: {
+                    id: (0, typeorm_1.In)(req.body.available_meal_times),
+                },
+            });
+            console.log(req.body);
             if (!menu) {
                 return null;
             }
-            // console.log(req.body);
+            const subCategoryId = parseInt(req.body.subCategoryId);
+            console.log(subCategoryId);
             menu.name = req === null || req === void 0 ? void 0 : req.body.name;
             menu.description = req.body.description;
             menu.price = req.body.price;
@@ -322,12 +400,9 @@ class MenuService {
             menu.avaliable_all_day = req.body.avaliable_all_day;
             menu.mainDishes = req.body.mainDishes;
             menu.category = parseInt(req.body.categoryId);
-            menu.subCategory =
-                parseInt(req.body.subCategoryId) !== 0
-                    ? parseInt(req.body.subCategoryId)
-                    : null;
+            menu.subCategory = subCategoryId ? subCategoryId : null;
             menu.available_meal_times = availableMealTimes;
-            console.log(menu);
+            // console.log(menu);
             try {
                 yield menu.save();
             }
@@ -335,7 +410,7 @@ class MenuService {
                 console.log(error);
             }
             menu.loadImagePath();
-            console.log(menu);
+            // console.log(menu);
             return menu;
         });
     }
@@ -400,6 +475,7 @@ class MenuService {
                 imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "menues");
             }
             catch (error) {
+                console.log(error);
                 imagePath = null;
             }
             const imageTodelete = `public/${menu === null || menu === void 0 ? void 0 : menu.image}`;
@@ -409,7 +485,7 @@ class MenuService {
                 }
             }
             if (menu !== null) {
-                menu.image = imagePath ? imagePath : "";
+                menu.image = imagePath !== null && imagePath !== void 0 ? imagePath : "";
             }
             yield (menu === null || menu === void 0 ? void 0 : menu.save());
             menu === null || menu === void 0 ? void 0 : menu.loadImagePath();

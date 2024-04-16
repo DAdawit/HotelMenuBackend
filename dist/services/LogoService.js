@@ -13,6 +13,7 @@ exports.LogoService = void 0;
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
 const Logo_1 = require("../entities/Logo");
+const pagination_1 = require("../utils/pagination");
 class LogoService {
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,6 +21,20 @@ class LogoService {
                 const logos = yield Logo_1.Logo.find({});
                 // console.log(logos);
                 return logos;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
+    admingetLogos(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = Logo_1.Logo.createQueryBuilder().orderBy("created_at", "DESC");
+                const data = (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error
@@ -49,7 +64,7 @@ class LogoService {
                 // Use the utility function to handle file upload
                 const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "logos");
                 const logo = new Logo_1.Logo();
-                logo.name = req.body.name;
+                logo.name = req.body.name.toLowerCase();
                 logo.image = imagePath || "";
                 try {
                     yield logo.save();
@@ -84,7 +99,7 @@ class LogoService {
                 yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
             }
             if (logo !== null) {
-                logo.name = req.body.name;
+                logo.name = req.body.name.toLowerCase();
                 logo.image = imagePath !== null && imagePath !== void 0 ? imagePath : logo.image;
             }
             yield (logo === null || logo === void 0 ? void 0 : logo.save());

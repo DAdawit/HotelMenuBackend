@@ -5,6 +5,7 @@ import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
 import { Logo } from "../entities/Logo";
+import { Paginate } from "../utils/pagination";
 
 export class LogoService {
   async getAll(): Promise<Logo[] | null> {
@@ -13,6 +14,24 @@ export class LogoService {
       // console.log(logos);
 
       return logos;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
+
+  async admingetLogos(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = Logo.createQueryBuilder().orderBy(
+        "created_at",
+        "DESC"
+      );
+      const data = Paginate<Logo>(queryBuilder, req);
+
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -43,7 +62,7 @@ export class LogoService {
       const imagePath = await uploadFile(req, "logos");
 
       const logo = new Logo();
-      logo.name = req.body.name;
+      logo.name = req.body.name.toLowerCase();
       logo.image = imagePath || "";
 
       try {
@@ -81,7 +100,7 @@ export class LogoService {
     }
 
     if (logo !== null) {
-      logo.name = req.body.name;
+      logo.name = req.body.name.toLowerCase();
       logo.image = imagePath ?? logo.image;
     }
     await logo?.save();

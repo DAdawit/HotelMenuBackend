@@ -13,6 +13,8 @@ import AdminController from "../controller/AdminController";
 import MealTimeController from "../controller/MealTimeController";
 import HeroController from "../controller/HeroController";
 import LogoController from "../controller/LogoController";
+import ReportsController from "../controller/ReportsController";
+import ProfileController from "../controller/ProfileController";
 const router = Router();
 
 // Routes that do not require authentication
@@ -21,14 +23,18 @@ router.get("/users", UserController.getUsers);
 router.post("/users", UserController.addUser);
 router.put("/change-profile-pic/:id", UserController.updateProfilePic);
 router.get("/heros", HeroController.getHeroSection);
+router.get("/all-heros", HeroController.getAllHeroSection);
 router.get("/logos", LogoController.getLogos);
+router.get("/profile", ProfileController.get);
 router.get("/menus", MenuController.get);
 router.get("/menus", MealTimeController.getMealTimes);
 router.get("/menus/menusbyCategory", MenuController.menuesByCategory);
 router.get("/menus/mealtime/:id", MenuController.fetchMenuesByMealTime);
 router.get("/menus/category/:id", MenuController.fetchMenuesByCategory);
-router.get("/menu/subCategory/:id", MenuController.featchMenuBySubCategory);
+router.get("/menus/subCategory/:id", MenuController.featchMenuBySubCategory);
 router.get("/menus/special-foods", MenuController.fetchSpecialFoodsMenus);
+router.get("/search", MenuController.SearchMenus);
+router.get("/menu/special-foods", MenuController.fetchSpecialFoodsMenus);
 router.get(
   "/menus/all-special-foods",
   MenuController.fetchAllSpecialFoodsMenus
@@ -38,8 +44,10 @@ router.get("/menus/all-main-dishes", MenuController.fetchAllMainDishes);
 router.get("/mealTime/:id", MealTimeController.getDetails);
 router.get("/categories/:id", CategoryController.getCategoryById);
 router.get("/category/:id", CategoryController.categoryById);
+router.get("/sub-category/:id", SubcategoryController.getDetail);
 
 router.get("/menus/mealtimes", MenuController.menuesByMealTime);
+router.get("/menus/subcategories", MenuController.menuesBySubCategory);
 
 router.get("/products/related/:id", MenuController.relatedProducts);
 router.get("/products/:id", MenuController.detail);
@@ -65,6 +73,7 @@ authRoutes.post("/admin/add-menu", MenuController.add);
 authRoutes.get("/admin/menus/:id", MenuController.detail);
 authRoutes.put("/admin/add-menuImage/:id", MenuController.addOrChangeMenuImage);
 authRoutes.put("/admin/menu/:id", MenuController.updateMenu);
+authRoutes.get("/admin/menuSearch", MenuController.adminMenuSearch);
 
 authRoutes.put("/admin/order/:id/change-status", OrderController.changeStatus);
 
@@ -74,13 +83,14 @@ authRoutes.get("/admin/heros/:id", HeroController.getHeroSectionById);
 authRoutes.delete("/admin/heros/:id", HeroController.removeHeroSection);
 authRoutes.put("/admin/heros/:id", HeroController.updateHeroSection);
 
-authRoutes.get("/admin/logos", LogoController.getLogos);
+authRoutes.get("/admin/logos", LogoController.AdmingetLogos);
 authRoutes.post("/admin/logos", LogoController.addLogo);
 authRoutes.get("/admin/logos/:id", LogoController.getLogoById);
 authRoutes.delete("/admin/logos/:id", LogoController.removeLogo);
 authRoutes.put("/admin/logos/:id", LogoController.updateLogo);
 
-authRoutes.get("/admin/categories", CategoryController.getCategories);
+authRoutes.get("/admin/allCategories", CategoryController.getCategories);
+authRoutes.get("/admin/categories", CategoryController.AdmingetCategories);
 authRoutes.get(
   "/admin/categories-with-subcategories",
   CategoryController.getCategorieswithSubcategories
@@ -90,7 +100,12 @@ authRoutes.get("/admin/categories/:id", CategoryController.getCategoryById);
 authRoutes.delete("/admin/categories/:id", CategoryController.removeCategory);
 authRoutes.put("/admin/categories/:id", CategoryController.updateCategory);
 
-authRoutes.get("/admin/sub-categories", SubcategoryController.getAll);
+authRoutes.get("/admin/all-sub-categories", SubcategoryController.getAll);
+authRoutes.get(
+  "/admin/sub-categories",
+  SubcategoryController.AdmingetSubCategories
+);
+
 authRoutes.post("/admin/sub-categories", SubcategoryController.addSubCategory);
 authRoutes.get("/admin/sub-categories/:id", SubcategoryController.getDetail);
 
@@ -146,7 +161,23 @@ authRoutes.post("/report-menu/:id", ReportProductController.addReportedMenu);
 // will be done for admin only
 authRoutes.put("/report-menu/:id", ReportProductController.updateReview);
 
+authRoutes.get(
+  "/admin/states/menuByCategory",
+  ReportsController.menusByCategory
+);
+authRoutes.get(
+  "/admin/states/menuBysubCategory",
+  ReportsController.menusBySubCategory
+);
+authRoutes.get("/admin/states/mealtime", ReportsController.menusBymealtime);
+authRoutes.get("/admin/states", ReportsController.index);
+
 // Adimin routes
+authRoutes.get("/admin/profile", ProfileController.get);
+authRoutes.post("/admin/profile", ProfileController.addProfile);
+authRoutes.put("/admin/profile/:id", ProfileController.updateProfile);
+authRoutes.delete("/admin/profile/:id", ProfileController.get);
+authRoutes.post("/admin/changePassword", UserController.ChangePassword);
 
 router.use(authRoutes);
 

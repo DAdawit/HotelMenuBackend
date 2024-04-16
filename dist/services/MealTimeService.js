@@ -30,10 +30,9 @@ class MealTimeService {
     AddMealTime(req) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("hello mother fucker");
                 const imagePath = yield (0, SingleFileUploade_1.uploadFile)(req, "mealtime");
                 const mealTime = new AvaliableMealTime_1.AvailableMealTime();
-                mealTime.name = req.body.name;
+                mealTime.name = req.body.name.toLowerCase();
                 mealTime.image = imagePath || "";
                 console.log(mealTime);
                 try {
@@ -87,7 +86,7 @@ class MealTimeService {
                     yield (0, DeleteImages_1.DeleteImage)(imageTodelete);
                 }
                 if (mealTime !== null) {
-                    mealTime.name = req.body.name;
+                    mealTime.name = req.body.name.toLowerCase();
                     mealTime.image = imagePath !== null && imagePath !== void 0 ? imagePath : mealTime.image;
                 }
                 yield (mealTime === null || mealTime === void 0 ? void 0 : mealTime.save());

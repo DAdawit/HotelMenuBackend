@@ -20,6 +20,9 @@ let SubCategory = class SubCategory extends typeorm_1.BaseEntity {
         const baseUrl = (0, host_1.getBaseUrl)();
         this.imageUrl = baseUrl + this.image;
     }
+    convertNameToLowercase() {
+        this.name = this.name.toLowerCase();
+    }
 };
 exports.SubCategory = SubCategory;
 __decorate([
@@ -59,6 +62,13 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], SubCategory.prototype, "updated_at", void 0);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    (0, typeorm_1.BeforeUpdate)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], SubCategory.prototype, "convertNameToLowercase", null);
 exports.SubCategory = SubCategory = __decorate([
     (0, typeorm_1.Entity)("subCategories")
 ], SubCategory);

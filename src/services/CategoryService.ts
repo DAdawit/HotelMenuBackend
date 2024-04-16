@@ -4,12 +4,31 @@ import Multer from "multer";
 import { Request } from "express";
 import { uploadFile } from "../utils/SingleFileUploade";
 import { DeleteImage } from "../utils/DeleteImages";
+import { Paginate } from "../utils/pagination";
 
 export class CategoryService {
   async getAll(): Promise<Category[] | null> {
     try {
       const categories = await Category.find({});
       return categories;
+    } catch (error) {
+      throw new Error(
+        error instanceof Error
+          ? error.message
+          : "An unknown error occurred in fetching category"
+      );
+    }
+  }
+
+  async admingetCategories(req: Request): Promise<any | null> {
+    try {
+      const queryBuilder = Category.createQueryBuilder().orderBy(
+        "created_at",
+        "DESC"
+      );
+      const data = Paginate<Category>(queryBuilder, req);
+
+      return data;
     } catch (error) {
       throw new Error(
         error instanceof Error
@@ -73,7 +92,7 @@ export class CategoryService {
       const imagePath = await uploadFile(req, "category");
 
       const category = new Category();
-      category.name = req.body.name;
+      category.name = req.body.name.toLowerCase();
       category.image = imagePath || "";
 
       try {
@@ -112,7 +131,7 @@ export class CategoryService {
     }
 
     if (category !== null) {
-      category.name = req.body.name;
+      category.name = req.body.name.toLowerCase();
       category.image = imagePath ?? category.image;
     }
     await category?.save();

@@ -1,6 +1,8 @@
 import {
   AfterLoad,
   BaseEntity,
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,

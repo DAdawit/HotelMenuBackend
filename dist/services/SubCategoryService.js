@@ -13,6 +13,7 @@ exports.SubCategoryService = void 0;
 const SubCategory_1 = require("../entities/SubCategory");
 const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
+const pagination_1 = require("../utils/pagination");
 class SubCategoryService {
     index() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -21,6 +22,22 @@ class SubCategoryService {
                     relations: { category: true },
                 });
                 return subCategories;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching subCategories");
+            }
+        });
+    }
+    AdmingetSubCategories(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = SubCategory_1.SubCategory.createQueryBuilder("subcategory")
+                    .leftJoinAndSelect("subcategory.category", "category")
+                    .orderBy("subcategory.created_at", "DESC");
+                const data = (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error

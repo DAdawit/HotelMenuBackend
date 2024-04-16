@@ -13,25 +13,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const typeorm_1 = require("typeorm");
 const router_1 = __importDefault(require("./routes/router"));
 const cors_1 = __importDefault(require("cors"));
+const config_1 = require("./config");
+const compression_1 = __importDefault(require("compression"));
 const app = (0, express_1.default)();
 const port = 4000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 5, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+//   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+//   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+//   message: "Too many requests from this IP, please try again after 15 minutes",
+// });
+app.use((0, compression_1.default)({ threshold: 1024 }));
+// app.use(limiter);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, typeorm_1.createConnection)({
-            type: "postgres",
-            host: "localhost",
-            port: 5432,
-            username: "postgres",
-            password: "root",
-            database: "hotelMenu",
-            synchronize: true,
-            entities: [__dirname + "/entities/*{.js,.ts}"],
-        });
+        yield config_1.AppDataSource.initialize(); // Initialize your DataSource
         console.log("db connected successfully !");
     }
     catch (error) {

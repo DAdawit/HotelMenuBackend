@@ -18,6 +18,16 @@ class SubcategoryController {
         res.send(err);
       });
   };
+  public static AdmingetSubCategories = (req: Request, res: Response) => {
+    service
+      .AdmingetSubCategories(req)
+      .then((subcategories) => {
+        res.send(subcategories);
+      })
+      .catch((err) => {
+        res.send(err);
+      });
+  };
 
   public static getDetail = (req: Request, res: Response) => {
     service

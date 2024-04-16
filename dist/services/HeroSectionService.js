@@ -14,6 +14,7 @@ const SingleFileUploade_1 = require("../utils/SingleFileUploade");
 const DeleteImages_1 = require("../utils/DeleteImages");
 const Hero_1 = require("../entities/Hero");
 const Logo_1 = require("../entities/Logo");
+const pagination_1 = require("../utils/pagination");
 class HeroSectionService {
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -39,12 +40,25 @@ class HeroSectionService {
             }
         });
     }
-    AdmingetAll() {
+    getAllHeroSection() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const hero = yield Hero_1.Hero.find({});
-                // console.log(hero);
                 return hero;
+            }
+            catch (error) {
+                throw new Error(error instanceof Error
+                    ? error.message
+                    : "An unknown error occurred in fetching category");
+            }
+        });
+    }
+    AdmingetAll(req) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const queryBuilder = Hero_1.Hero.createQueryBuilder().orderBy("created_at", "DESC");
+                const data = (0, pagination_1.Paginate)(queryBuilder, req);
+                return data;
             }
             catch (error) {
                 throw new Error(error instanceof Error

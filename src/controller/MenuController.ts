@@ -58,6 +58,17 @@ class ProductController {
       });
   };
 
+  public static menuesBySubCategory = (req: Request, res: Response) => {
+    service
+      .MenuesBySubCategory()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+
   public static fetchMenuesByCategory = (req: Request, res: Response) => {
     service
       .FeatchMenuesByCategory(req)
@@ -68,9 +79,20 @@ class ProductController {
         res.json(err);
       });
   };
+
+  public static featchMenuesBySubCategory = (req: Request, res: Response) => {
+    service
+      .FeatchMenuesBySubCategory(req)
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
   public static featchMenuBySubCategory = (req: Request, res: Response) => {
     service
-      .FeatchMenuBySubCategory(req)
+      .FeatchMenuesBySubCategory(req)
       .then((menus) => {
         res.send(menus);
       })
@@ -81,6 +103,26 @@ class ProductController {
   public static fetchSpecialFoodsMenus = (req: Request, res: Response) => {
     service
       .FetchSpecialFoodsMenus()
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static SearchMenus = (req: Request, res: Response) => {
+    service
+      .searchMenus(req)
+      .then((menus) => {
+        res.send(menus);
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  };
+  public static adminMenuSearch = (req: Request, res: Response) => {
+    service
+      .AdminMenuSearch(req)
       .then((menus) => {
         res.send(menus);
       })
@@ -148,6 +190,19 @@ class ProductController {
         res.status(201).send(menu);
       })
       .catch((err) => {
+        if (err instanceof Error) {
+          // Here you can add more specific error handling based on the error message or type
+          // For example, if you have a custom NotFoundError for items not found in the database
+          // if (err instanceof NotFoundError) {
+          //   return res.status(404).json({ message: err.message });
+          // }
+
+          // For this example, we'll assume any error caught here is a server error
+          res.status(500).json({ message: err.message });
+        } else {
+          // If the error is not an instance of Error, it's an unexpected condition
+          res.status(500).json({ message: "An unexpected error occurred" });
+        }
         res.send(err);
       });
   };

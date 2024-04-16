@@ -140,4 +140,21 @@ UserController.updateProfilePic = (req, res) => {
         res.send(err);
     });
 };
+UserController.ChangePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    const userId = (0, getUserid_1.getUserId)(req);
+    const user = yield User_1.User.findOne({
+        where: {
+            id: userId,
+        },
+    });
+    if (user && bcryptjs_1.default.compareSync(req.body.old_password, user.password)) {
+        user.password = bcryptjs_1.default.hashSync(req.body.new_password, 8);
+        user.save();
+        return res.status(200).send("password changed successfully");
+    }
+    else {
+        return res.status(401).json({ detail: "Old password is incorrect !" });
+    }
+});
 exports.default = UserController;
